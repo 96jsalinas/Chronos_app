@@ -44,9 +44,11 @@ public class Customize extends AppCompatActivity {
                         int id  = menuItem.getItemId();
                         switch (id){
                             case R.id.nav_main_screen:
-                                Intent dynIntent = new Intent(getBaseContext(),MainScreen.class);
-                                startActivity(dynIntent);
-                                break;
+                                Intent mainIntent = new Intent(getBaseContext(),MainScreen.class);
+                                startActivity(mainIntent);
+                            case R.id.nav_manage_categories:
+                                Intent manCatIntent = new Intent(getBaseContext(),ManageCategories.class);
+                                startActivity(manCatIntent);
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();

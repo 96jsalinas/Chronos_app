@@ -1,27 +1,26 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class MainScreen extends AppCompatActivity {
+public class ManageCategories extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_screen);
+        setContentView(R.layout.activity_manage_categories);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -46,6 +45,7 @@ public class MainScreen extends AppCompatActivity {
                             case R.id.nav_manage_categories:
                                 Intent manCatIntent = new Intent(getBaseContext(),ManageCategories.class);
                                 startActivity(manCatIntent);
+
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
@@ -84,5 +84,10 @@ public class MainScreen extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClick(View view) {
+        Intent indivStats = new Intent(getBaseContext(),IndividualStats.class);
+        startActivity(indivStats);
     }
 }
