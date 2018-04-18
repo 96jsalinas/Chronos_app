@@ -10,23 +10,18 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
-public class Customize extends AppCompatActivity {
+public class MainStats extends AppCompatActivity {
+
 
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customize);
+        setContentView(R.layout.activity_main_stats);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        RadioButton categoryButton = findViewById(R.id.catRadioButton);
-        radioGroup.check(categoryButton.getId());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -59,6 +54,7 @@ public class Customize extends AppCompatActivity {
                                 Intent statsIntent = new Intent(getBaseContext(),History.class);
                                 startActivity(statsIntent);
                                 break;
+
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
@@ -69,6 +65,7 @@ public class Customize extends AppCompatActivity {
                         return true;
                     }
                 });
+
     }
 
     @Override
@@ -87,5 +84,4 @@ public class Customize extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

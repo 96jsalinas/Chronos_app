@@ -42,12 +42,19 @@ public class ManageCategories extends AppCompatActivity {
                             case R.id.nav_main_screen:
                                 Intent mainIntent = new Intent(getBaseContext(),MainScreen.class);
                                 startActivity(mainIntent);
+                                break;
                             case R.id.nav_manage_categories:
                                 Intent manCatIntent = new Intent(getBaseContext(),ManageCategories.class);
                                 startActivity(manCatIntent);
+                                break;
                             case R.id.nav_history:
                                 Intent historyIntent = new Intent(getBaseContext(),History.class);
                                 startActivity(historyIntent);
+                                break;
+                            case R.id.nav_main_stats:
+                                Intent statsIntent = new Intent(getBaseContext(),History.class);
+                                startActivity(statsIntent);
+                                break;
 
                         }
                         // close drawer when item is tapped
