@@ -1,32 +1,29 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.view.View;
 
-public class Customize extends AppCompatActivity {
+public class EditHistory extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customize);
+        setContentView(R.layout.activity_edit_history);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        RadioButton categoryButton = findViewById(R.id.catRadioButton);
-        radioGroup.check(categoryButton.getId());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,9 +46,6 @@ public class Customize extends AppCompatActivity {
                             case R.id.nav_manage_categories:
                                 Intent manCatIntent = new Intent(getBaseContext(),ManageCategories.class);
                                 startActivity(manCatIntent);
-                            case R.id.nav_history:
-                                Intent historyIntent = new Intent(getBaseContext(),History.class);
-                                startActivity(historyIntent);
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
@@ -62,6 +56,9 @@ public class Customize extends AppCompatActivity {
                         return true;
                     }
                 });
+
+
+
     }
 
     @Override

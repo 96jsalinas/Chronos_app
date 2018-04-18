@@ -46,6 +46,9 @@ public class MainScreen extends AppCompatActivity {
                             case R.id.nav_manage_categories:
                                 Intent manCatIntent = new Intent(getBaseContext(),ManageCategories.class);
                                 startActivity(manCatIntent);
+                            case R.id.nav_history:
+                                Intent historyIntent = new Intent(getBaseContext(),History.class);
+                                startActivity(historyIntent);
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
