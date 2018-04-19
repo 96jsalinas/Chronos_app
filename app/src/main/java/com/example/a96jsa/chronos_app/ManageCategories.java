@@ -52,7 +52,7 @@ public class ManageCategories extends AppCompatActivity {
                                 startActivity(historyIntent);
                                 break;
                             case R.id.nav_main_stats:
-                                Intent statsIntent = new Intent(getBaseContext(),History.class);
+                                Intent statsIntent = new Intent(getBaseContext(),MainStats.class);
                                 startActivity(statsIntent);
                                 break;
 
