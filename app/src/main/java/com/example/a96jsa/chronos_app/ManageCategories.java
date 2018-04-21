@@ -12,17 +12,52 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class ManageCategories extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_categories);
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        listView = findViewById(R.id.listView);
+
+        final DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        final ArrayList<String> categoryList = databaseHelper.getCategories();
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1,
+                categoryList);
+
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+//             ArrayList<String> activitiyList = databaseHelper.showPossibleActivities((String) listView.getItemAtPosition(i));
+//
+//
+//                 showActivities(activitiyList);
+
+                Intent intent = new Intent(getApplicationContext(),IndividualStats.class);
+                intent.putExtra("categoryName",listView.getItemAtPosition(i).toString());
+                startActivity(intent);
+            }
+
+
+        });
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
