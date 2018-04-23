@@ -9,12 +9,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,31 +37,35 @@ public class ManageCategories extends AppCompatActivity {
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         final ArrayList<String> categoryList = databaseHelper.getCategories();
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_expandable_list_item_1,
-                categoryList);
+        ArrayList<Model> models = new ArrayList<Model>();
+        models.add(new Model("Categories"));
+        for(int i=0;i<categoryList.size();++i){
+            models.add(new Model(categoryList.get(i),false));
+        }
 
-        listView.setAdapter(arrayAdapter);
+        MyAdapter adapter = new MyAdapter(this,models);
+        listView.setAdapter(adapter);
+
+        //Doesn't work
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-//             ArrayList<String> activitiyList = databaseHelper.showPossibleActivities((String) listView.getItemAtPosition(i));
-//
-//
-//                 showActivities(activitiyList);
-
-                Intent intent = new Intent(getApplicationContext(),IndividualStats.class);
-                intent.putExtra("categoryName",listView.getItemAtPosition(i).toString());
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals(findViewById(R.id.item_title))){
+                    Toast.makeText(ManageCategories.this, "Should launch screen with specific activities", Toast.LENGTH_SHORT).show();
+                }
+                if(parent.getItemAtPosition(position).equals(findViewById(R.id.edit_button))){
+                    Intent intent = new Intent(getBaseContext(),Customize.class);
+                    startActivity(intent);
+                }
+                if(parent.getItemAtPosition(position).equals(findViewById(R.id.delete_button))){
+                    Toast.makeText(ManageCategories.this, "Should delete category", Toast.LENGTH_SHORT).show();
+                }
+                if(parent.getItemAtPosition(position).equals(findViewById(R.id.stats_button))){
+                    Intent intent = new Intent(getBaseContext(),IndividualStats.class);
+                    startActivity(intent);
+                }
             }
-
-
         });
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -110,7 +118,6 @@ public class ManageCategories extends AppCompatActivity {
                 startActivity(dynIntent);
             }
         });
-
 
     }
 
