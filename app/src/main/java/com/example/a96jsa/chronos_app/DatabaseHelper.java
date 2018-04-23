@@ -113,6 +113,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return this.showPossibleActivities(category);
     }
 
+
+    public int getCategoryTotalTime(String category){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] columns = {"category,totalTime"};
+        String selection = "category = ?";
+        String[] selectionArgs = {category};
+        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
+        int totalCategoryTime = 0;
+
+        while(cursor.moveToNext()){
+
+            int cursorTime = Integer.parseInt(cursor.getString(1));
+            totalCategoryTime += cursorTime;
+
+        }
+
+        return totalCategoryTime;
+    }
+
     //Insert activity_activity_type values
     public boolean insertActivityData(String activityName, String totalTime, String startTime, String endTime, String date, String color){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

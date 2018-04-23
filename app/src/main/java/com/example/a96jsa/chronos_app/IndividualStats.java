@@ -1,6 +1,7 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class IndividualStats extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -23,6 +33,26 @@ public class IndividualStats extends AppCompatActivity {
         setContentView(R.layout.activity_individual_stats);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_indiv);
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(20,"Mex"));
+        entries.add(new PieEntry(10,"Finland"));
+        entries.add(new PieEntry(5,"Canada"));
+        entries.add(new PieEntry(21,"Russia"));
+
+        Legend legend = pieChart.getLegend();
+        legend.setTextSize(23);
+        legend.setEnabled(false);
+        pieChart.getDescription().setEnabled(false);
+
+
+        PieDataSet set = new PieDataSet(entries,"");
+        set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        PieData data = new PieData(set);
+        pieChart.setData(data);
+        pieChart.invalidate();
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
