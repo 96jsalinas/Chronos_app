@@ -46,27 +46,6 @@ public class ManageCategories extends AppCompatActivity {
         MyAdapter adapter = new MyAdapter(this,models);
         listView.setAdapter(adapter);
 
-        //Doesn't work
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals(findViewById(R.id.item_title))){
-                    Toast.makeText(ManageCategories.this, "Should launch screen with specific activities", Toast.LENGTH_SHORT).show();
-                }
-                if(parent.getItemAtPosition(position).equals(findViewById(R.id.edit_button))){
-                    Intent intent = new Intent(getBaseContext(),Customize.class);
-                    startActivity(intent);
-                }
-                if(parent.getItemAtPosition(position).equals(findViewById(R.id.delete_button))){
-                    Toast.makeText(ManageCategories.this, "Should delete category", Toast.LENGTH_SHORT).show();
-                }
-                if(parent.getItemAtPosition(position).equals(findViewById(R.id.stats_button))){
-                    Intent intent = new Intent(getBaseContext(),IndividualStats.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
