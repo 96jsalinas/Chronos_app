@@ -93,6 +93,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Reading', 'BLUE')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Gaming', 'BLACK')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Sleeping', 'YELLOW')");
+
+        insertActivityData("Running","5571","10:49:45","10:49:51","18-Apr-2018","RED");
+        insertActivityData("Walking","5571","10:49:51","10:49:57","18-Apr-2018","BLUE");
+        insertActivityData("Swimming","5571","10:49:57","10:50:03","18-Apr-2018","BLACK");
+        insertActivityData("Gym","5571","10:50:03","10:50:09","18-Apr-2018","YELLOW");
+        insertActivityData("Studying","5571","10:50:09","10:50:15","18-Apr-2018","RED");
+        insertActivityData("Writing","5571","10:50:15","10:50:21","18-Apr-2018","BLUE");
+        insertActivityData("Exercises","5571","10:50:21","10:50:27","18-Apr-2018","BLACK");
+        insertActivityData("Lecture recap","5571","10:50:27","10:50:33","18-Apr-2018","YELLOW");
+        insertActivityData("Cleaning","5571","10:50:33","10:50:39","18-Apr-2018","RED");
+        insertActivityData("Cooking","5571","10:50:39","10:50:45","18-Apr-2018","BLUE");
+        insertActivityData("Laundry","5571","10:50:45","10:50:51","18-Apr-2018","BLACK");
+        insertActivityData("TV","5571","10:50:51","10:50:57","18-Apr-2018","RED");
+        insertActivityData("Reading","5571","10:50:57","10:51:03","18-Apr-2018","BLUE");
+        insertActivityData("Gaming","5571","10:51:03","10:51:09","18-Apr-2018","BLACK");
+        insertActivityData("Sleeping","5571","10:51:09","10:51:15","18-Apr-2018","YELLOW");
+
     }
 
 
@@ -232,7 +249,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         //Get results from query and save them in a cursor
-        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM sqlite_master WHERE type='table' AND name!='android_metadata' AND name!='sqlite_sequence'", null);
+        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM "+CATEGORY_TABLE, null);
 
         //Transform Cursor into ArrayList with type String
         ArrayList<String> possibleActivityResultList = new ArrayList<String>();
