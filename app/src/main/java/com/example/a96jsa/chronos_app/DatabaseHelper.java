@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -94,21 +97,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Gaming', 'BLACK')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Sleeping', 'YELLOW')");
 
-        insertActivityData("Running","5571","10:49:45","10:49:51","18-Apr-2018","RED");
-        insertActivityData("Walking","5571","10:49:51","10:49:57","18-Apr-2018","BLUE");
-        insertActivityData("Swimming","5571","10:49:57","10:50:03","18-Apr-2018","BLACK");
-        insertActivityData("Gym","5571","10:50:03","10:50:09","18-Apr-2018","YELLOW");
-        insertActivityData("Studying","5571","10:50:09","10:50:15","18-Apr-2018","RED");
-        insertActivityData("Writing","5571","10:50:15","10:50:21","18-Apr-2018","BLUE");
-        insertActivityData("Exercises","5571","10:50:21","10:50:27","18-Apr-2018","BLACK");
-        insertActivityData("Lecture recap","5571","10:50:27","10:50:33","18-Apr-2018","YELLOW");
-        insertActivityData("Cleaning","5571","10:50:33","10:50:39","18-Apr-2018","RED");
-        insertActivityData("Cooking","5571","10:50:39","10:50:45","18-Apr-2018","BLUE");
-        insertActivityData("Laundry","5571","10:50:45","10:50:51","18-Apr-2018","BLACK");
-        insertActivityData("TV","5571","10:50:51","10:50:57","18-Apr-2018","RED");
-        insertActivityData("Reading","5571","10:50:57","10:51:03","18-Apr-2018","BLUE");
-        insertActivityData("Gaming","5571","10:51:03","10:51:09","18-Apr-2018","BLACK");
-        insertActivityData("Sleeping","5571","10:51:09","10:51:15","18-Apr-2018","YELLOW");
+        insertActivityData(sqLiteDatabase,"Running","5571","10:49:45","10:49:51","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Walking","5571","10:49:51","10:49:57","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Swimming","5571","10:49:57","10:50:03","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Gym","5571","10:50:03","10:50:09","18-Apr-2018","YELLOW");
+        insertActivityData(sqLiteDatabase,"Studying","5571","10:50:09","10:50:15","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Writing","5571","10:50:15","10:50:21","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Exercises","5571","10:50:21","10:50:27","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Lecture recap","5571","10:50:27","10:50:33","18-Apr-2018","YELLOW");
+        insertActivityData(sqLiteDatabase,"Cleaning","5571","10:50:33","10:50:39","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Cooking","5571","10:50:39","10:50:45","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Laundry","5571","10:50:45","10:50:51","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"TV","5571","10:50:51","10:50:57","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Reading","5571","10:50:57","10:51:03","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Gaming","5571","10:51:03","10:51:09","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Sleeping","5571","10:51:09","10:51:15","18-Apr-2018","YELLOW");
 
     }
 
@@ -150,8 +153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Insert activity_activity_type values
-    public boolean insertActivityData(String activityName, String totalTime, String startTime, String endTime, String date, String color){
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+    public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color){
+       // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Activity_COL2, activityName);
         contentValues.put(Activity_COL3, totalTime);
@@ -313,6 +316,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + tableName);
 
         return true;
+    }
+
+    //Show history
+    public List<Map<String, String>> showHistory (String range){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        //Get results from query and save them in a cursor
+        Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where "+ Activity_COL6 +" >= ?", new String[]{range});
+
+        //Transform Cursor into ArrayList with type String
+        ArrayList<String> historyResultList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()){
+            //Cursor starts counting at 0, since the name of the activity_activity_type is saved at the
+            // second position of the table it has to be 1
+            historyResultList.add(res.getString(1));
+            for (int i = 3; i<=6; i++){
+                buffer.append(res.getString(i)+" ");
+            }
+            arrayList.add(String.valueOf(buffer));
+            buffer.delete(0, buffer.length());
+        }
+
+
+
+        List<Map<String, String>> data = new ArrayList<>();
+
+        for (int j =0; j< historyResultList.size(); j++){
+
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("name", historyResultList.get(j));
+            resultMap.put("date", arrayList.get(j));
+            data.add(resultMap);
+        }
+
+
+        return data;
     }
 
 }

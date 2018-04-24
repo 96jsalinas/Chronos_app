@@ -13,9 +13,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class History extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
+    private ListView historyView;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +33,8 @@ public class History extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
+        historyView = findViewById(R.id.historyList);
+        databaseHelper = new DatabaseHelper(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -76,6 +87,27 @@ public class History extends AppCompatActivity {
             }
         });
 
+        //Selection for last week, can be found in minus 7
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_YEAR, -7);
+        Date daysBeforeDate = cal.getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(daysBeforeDate);
+
+        final List<Map<String, String>> data = databaseHelper.showHistory(formattedDate);
+
+
+
+        SimpleAdapter adapter = new SimpleAdapter(this, data,
+                android.R.layout.simple_list_item_2,
+                new String[] {"name", "date"},
+                new int[] {android.R.id.text1,
+                        android.R.id.text2});
+        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
+
+
+        historyView.setAdapter(adapter);
 
     }
 
