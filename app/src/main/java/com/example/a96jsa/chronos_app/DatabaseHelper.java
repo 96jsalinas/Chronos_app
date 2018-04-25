@@ -155,7 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()){
             arrayList.add(Integer.parseInt(cursor.getString(0)));
         }
-        for (int i=0; i< arrayList.size(); i++){
+        for (int i=0; i < arrayList.size(); i++){
             totalCategoryTime = arrayList.get(i);
         }
         return totalCategoryTime;
@@ -274,7 +274,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         //Get results from query and save them in a cursor
-        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM "+CATEGORY_TABLE, null);
+        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM "+ CATEGORY_TABLE, null);
 
         //Transform Cursor into ArrayList with type String
         ArrayList<String> possibleActivityResultList = new ArrayList<String>();
