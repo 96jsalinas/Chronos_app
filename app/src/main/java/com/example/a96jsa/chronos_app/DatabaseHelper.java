@@ -137,8 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getCategoryTotalTime(String category){
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer totalCategoryTime = null;
-       /* String[] columns = {"category,totalTime"};
+        String[] columns = {"category,totalTime"};
         String selection = "category = ?";
         String[] selectionArgs = {category};
         Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
@@ -149,20 +148,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int cursorTime = Integer.parseInt(cursor.getString(1));
             totalCategoryTime += cursorTime;
 
-        } */
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        Cursor cursor = db.rawQuery("select TotalTime from " + category, null);
-        while (cursor.moveToNext()){
-            arrayList.add(Integer.parseInt(cursor.getString(0)));
         }
-        for (int i=0; i< arrayList.size(); i++){
-            totalCategoryTime = arrayList.get(i);
-        }
+
         return totalCategoryTime;
     }
 
     //Insert activity_activity_type values
-    public void insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String category){
+    public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String category){
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Activity_COL2, activityName);
@@ -171,18 +163,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Activity_COL5, endTime);
         contentValues.put(Activity_COL6, date);
         contentValues.put(Activity_COL7, color);
-        contentValues.put(Activity_COL8, category);
+        contentValues.put(Activity_COL8,category);
         //insert returns -1 if it failed, so it is possible to check this way if it did work
-         sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
+        long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
         addToTotalTime (sqLiteDatabase, activityName, totalTime, category);
-
+        if (result == -1){
+            return false;
+        }else{
+            return true;
+        }
 
     }
 
-    public void addToTotalTime(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String category) {
+    public String addToTotalTime(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String category) {
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        Cursor cursor1 = sqLiteDatabase.rawQuery("select TotalTime from "+ category + " where Type = ?", new String[]{activityName});
+        Cursor cursor1 = sqLiteDatabase.rawQuery("select TotalTime from "+ category+ " where Type = ?", new String[]{activityName});
         Integer currentTotalTime = null;
         Integer additionalTime = Integer.getInteger(totalTime);
         while (cursor1.moveToFirst()){
@@ -193,7 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("TotalTime", storedTotalTime);
         sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{activityName});
-
+        return storedTotalTime;
     }
 
 
