@@ -34,8 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final static String Activity_COL4 = "startTime";
     private final static String Activity_COL5 = "endTime";
     private final static String Activity_COL6 = "date";
-    private final static String Activity_COL7 = "Color";
-    private final static String Activity_COL8 = "Category";
+    private final static String Activity_COL7 = "color";
 
     //Category table
     private final static String CATEGORY_TABLE = "Category";
@@ -61,58 +60,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table "+ ACTIVITY_TABLE +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, activityName TEXT, Category TEXT, Color TEXT, " +
+        sqLiteDatabase.execSQL("create table "+ ACTIVITY_TABLE +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, activityName TEXT, Color TEXT, " +
                 " startTime TEXT, endTime TEXT, totalTime TEXT, date TEXT)");
 
         sqLiteDatabase.execSQL("create table "+ CATEGORY_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
 
-        sqLiteDatabase.execSQL("create table "+ SPORT_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
+        sqLiteDatabase.execSQL("create table "+ SPORT_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
 
-        sqLiteDatabase.execSQL("create table "+ WORK_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
+        sqLiteDatabase.execSQL("create table "+ WORK_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
 
-        sqLiteDatabase.execSQL("create table "+ HOUSEWORK_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
+        sqLiteDatabase.execSQL("create table "+ HOUSEWORK_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
 
-        sqLiteDatabase.execSQL("create table "+ LEISURE_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
+        sqLiteDatabase.execSQL("create table "+ LEISURE_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Sport', 'RED')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Work', 'BLUE')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Housework', 'BLACK')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Leisure', 'YELLOW')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Running', 'RED', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Walking', 'BLUE', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Swimming', 'BACK', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Gym', 'YELLOW', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color) VALUES('Running', 'RED')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color) VALUES('Walking', 'BLUE')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color) VALUES('Swimming', 'BACK')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color) VALUES('Gym', 'YELLOW')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Studying', 'RED', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Writing', 'BLUE', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Exercices', 'BLACK', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Lecture recap', 'YELLOW', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color) VALUES('Studying', 'RED')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color) VALUES('Writing', 'BLUE')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color) VALUES('Exercices', 'BLACK')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color) VALUES('Lecture recap', 'YELLOW')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cleaning', 'RED', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cooking', 'BLUE', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Laundry', 'BLACK', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color) VALUES('Cleaning', 'RED')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color) VALUES('Cooking', 'BLUE')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color) VALUES('Laundry', 'BLACK')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('TV', 'RED', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Reading', 'BLUE', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Gaming', 'BLACK', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Sleeping', 'YELLOW', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('TV', 'RED')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Reading', 'BLUE')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Gaming', 'BLACK')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color) VALUES('Sleeping', 'YELLOW')");
 
-        insertActivityData(sqLiteDatabase,"Running","5571","10:49:45","10:49:51","18-Apr-2018","RED", "Sport");
-        insertActivityData(sqLiteDatabase,"Walking","5571","10:49:51","10:49:57","18-Apr-2018","BLUE", "Sport");
-        insertActivityData(sqLiteDatabase,"Swimming","5571","10:49:57","10:50:03","18-Apr-2018","BLACK", "Sport");
-        insertActivityData(sqLiteDatabase,"Gym","5571","10:50:03","10:50:09","18-Apr-2018","YELLOW", "Sport");
-        insertActivityData(sqLiteDatabase,"Studying","5571","10:50:09","10:50:15","18-Apr-2018","RED", "Work");
-        insertActivityData(sqLiteDatabase,"Writing","5571","10:50:15","10:50:21","18-Apr-2018","BLUE", "Work");
-        insertActivityData(sqLiteDatabase,"Exercises","5571","10:50:21","10:50:27","18-Apr-2018","BLACK", "Work");
-        insertActivityData(sqLiteDatabase,"Lecture recap","5571","10:50:27","10:50:33","18-Apr-2018","YELLOW", "Work");
-        insertActivityData(sqLiteDatabase,"Cleaning","5571","10:50:33","10:50:39","18-Apr-2018","RED", "Housework");
-        insertActivityData(sqLiteDatabase,"Cooking","5571","10:50:39","10:50:45","18-Apr-2018","BLUE", "Housework");
-        insertActivityData(sqLiteDatabase,"Laundry","5571","10:50:45","10:50:51","18-Apr-2018","BLACK", "Housework");
-        insertActivityData(sqLiteDatabase,"TV","5571","10:50:51","10:50:57","18-Apr-2018","RED", "Leisure");
-        insertActivityData(sqLiteDatabase,"Reading","5571","10:50:57","10:51:03","18-Apr-2018","BLUE", "Leisure");
-        insertActivityData(sqLiteDatabase,"Gaming","5571","10:51:03","10:51:09","18-Apr-2018","BLACK", "Leisure");
-        insertActivityData(sqLiteDatabase,"Sleeping","5571","10:51:09","10:51:15","18-Apr-2018","YELLOW", "Leisure");
+        insertActivityData(sqLiteDatabase,"Running","5571","10:49:45","10:49:51","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Walking","5571","10:49:51","10:49:57","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Swimming","5571","10:49:57","10:50:03","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Gym","5571","10:50:03","10:50:09","18-Apr-2018","YELLOW");
+        insertActivityData(sqLiteDatabase,"Studying","5571","10:50:09","10:50:15","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Writing","5571","10:50:15","10:50:21","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Exercises","5571","10:50:21","10:50:27","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Lecture recap","5571","10:50:27","10:50:33","18-Apr-2018","YELLOW");
+        insertActivityData(sqLiteDatabase,"Cleaning","5571","10:50:33","10:50:39","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Cooking","5571","10:50:39","10:50:45","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Laundry","5571","10:50:45","10:50:51","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"TV","5571","10:50:51","10:50:57","18-Apr-2018","RED");
+        insertActivityData(sqLiteDatabase,"Reading","5571","10:50:57","10:51:03","18-Apr-2018","BLUE");
+        insertActivityData(sqLiteDatabase,"Gaming","5571","10:51:03","10:51:09","18-Apr-2018","BLACK");
+        insertActivityData(sqLiteDatabase,"Sleeping","5571","10:51:09","10:51:15","18-Apr-2018","YELLOW");
 
     }
 
@@ -154,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Insert activity_activity_type values
-    public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String category){
+    public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color){
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Activity_COL2, activityName);
@@ -163,10 +162,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Activity_COL5, endTime);
         contentValues.put(Activity_COL6, date);
         contentValues.put(Activity_COL7, color);
-        contentValues.put(Activity_COL8,category);
         //insert returns -1 if it failed, so it is possible to check this way if it did work
         long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
-        addToTotalTime (sqLiteDatabase, activityName, totalTime, category);
+
         if (result == -1){
             return false;
         }else{
@@ -175,22 +173,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public String addToTotalTime(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String category) {
-       // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-
-        Cursor cursor1 = sqLiteDatabase.rawQuery("select TotalTime from "+ category+ " where Type = ?", new String[]{activityName});
-        Integer currentTotalTime = null;
-        Integer additionalTime = Integer.getInteger(totalTime);
-        while (cursor1.moveToFirst()){
-            currentTotalTime = Integer.parseInt(cursor1.getString(0));
-        }
-        Integer updatedTotalTime = currentTotalTime+additionalTime;
-        String storedTotalTime = updatedTotalTime.toString();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("TotalTime", storedTotalTime);
-        sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{activityName});
-        return storedTotalTime;
-    }
 
 
     //Insert category specific types, this methods needs also be called when a new category is created
