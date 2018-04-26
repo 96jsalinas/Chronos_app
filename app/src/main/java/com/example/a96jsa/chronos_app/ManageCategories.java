@@ -38,7 +38,7 @@ public class ManageCategories extends AppCompatActivity {
 
         final ArrayList<String> categoryList = databaseHelper.getCategories();
         ArrayList<Model> models = new ArrayList<Model>();
-        models.add(new Model("Categories"));
+        //models.add(new Model("Categories"));
         for(int i=0;i<categoryList.size();++i){
             models.add(new Model(categoryList.get(i),false));
         }
