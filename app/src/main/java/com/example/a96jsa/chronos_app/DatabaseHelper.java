@@ -171,6 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
 
+
     }
 
 
@@ -241,6 +242,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         value.put("Type",categoryName);
         value.put("Color",color);
         sqLiteDatabase.insert(CATEGORY_TABLE,null,value);
+        sqLiteDatabase.close();
+    }
+    public void insertActivityToActivityTable(String activityName, String color){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put("activityName",activityName);
+        value.put("Color",color);
+        sqLiteDatabase.insert(ACTIVITY_TABLE,null,value);
         sqLiteDatabase.close();
     }
 

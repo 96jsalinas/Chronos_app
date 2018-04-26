@@ -1,6 +1,7 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,12 +11,29 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class Customize extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class Customize extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+
+    String selectedCategory;
+    String selectedColor = "RED";
+    EditText editText;
+    Button submitButton;
+    Boolean categoryChecked;
+    Boolean activityChecked;
     private DrawerLayout mDrawerLayout;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +41,38 @@ public class Customize extends AppCompatActivity {
         setContentView(R.layout.activity_customize);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
+        submitButton = (Button) findViewById(R.id.submitButton);
+        editText = (EditText)findViewById(R.id.editText);
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
         RadioButton categoryButton = findViewById(R.id.catRadioButton);
+        RadioButton activityButton = findViewById(R.id.catRadioButton);
         radioGroup.check(categoryButton.getId());
+
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+
+        ArrayList<String> categoryList = databaseHelper.getCategories();
+
+        final Spinner categorySpinner = (Spinner)findViewById(R.id.categorySpinner);
+        ArrayAdapter<String> categorySpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categoryList);
+        categorySpinner.setAdapter(categorySpinnerArrayAdapter);
+        categorySpinner.setOnItemSelectedListener(this);
+        categorySpinner.setVisibility(View.INVISIBLE);
+
+        //spinner
+
+        ArrayList<String> colorListString = new ArrayList<>();
+        colorListString.add("RED");
+        colorListString.add("BLUE");
+        colorListString.add("GREEN");
+        colorListString.add("YELLOW");
+        colorListString.add("MAGENTA");
+        final Spinner colorSpinner = (Spinner)findViewById(R.id.colorSpinner);
+        ArrayAdapter<String> colorSpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,colorListString);
+        colorSpinner.setAdapter(colorSpinnerArrayAdapter);
+        colorSpinner.setOnItemSelectedListener(this);
+        colorSpinner.setVisibility(View.VISIBLE);
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,7 +115,47 @@ public class Customize extends AppCompatActivity {
                         return true;
                     }
                 });
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.catRadioButton:
+                        categoryChecked = true;
+                        activityChecked = false;
+                        Toast.makeText(getApplicationContext(),"category checked",Toast.LENGTH_SHORT).show();
+                        categorySpinner.setVisibility(View.INVISIBLE);
+                        colorSpinner.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.actRadioButton:
+                        activityChecked = true;
+                        categoryChecked = false;
+                        Toast.makeText(getApplicationContext(),"activity checked",Toast.LENGTH_SHORT).show();
+                        categorySpinner.setVisibility(View.VISIBLE);
+                        colorSpinner.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+        });
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ediTextValue = editText.getText().toString();
+                Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                if(categoryChecked){
+                    databaseHelper.insertCategorytoCategoryTable(ediTextValue,selectedColor);
+                    databaseHelper.createCategoryTable(ediTextValue);
+                }
+                else {
+                    databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
+                    databaseHelper.insertActivityToActivityTable(ediTextValue,selectedColor);
+
+                }
+
+            }
+        });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,4 +174,27 @@ public class Customize extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        int viewId = parent.getId();
+        switch (viewId){
+            case R.id.categorySpinner:
+                selectedCategory = parent.getSelectedItem().toString();
+                Toast.makeText(getApplicationContext(),selectedCategory,Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.colorSpinner:
+                selectedColor = parent.getSelectedItem().toString();;
+                Toast.makeText(getApplicationContext(),selectedColor,Toast.LENGTH_SHORT).show();
+
+
+        }
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+
+    }
 }
