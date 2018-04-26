@@ -30,10 +30,12 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
     String selectedColor = "RED";
     EditText editText;
     Button submitButton;
-    Boolean categoryChecked;
-    Boolean activityChecked;
+    Boolean categoryChecked = true;
+    Boolean activityChecked = false;
     private DrawerLayout mDrawerLayout;
     DatabaseHelper databaseHelper;
+
+    ArrayAdapter<String> categorySpinnerArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayList<String> categoryList = databaseHelper.getCategories();
 
         final Spinner categorySpinner = (Spinner)findViewById(R.id.categorySpinner);
-        ArrayAdapter<String> categorySpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categoryList);
+        categorySpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categoryList);
         categorySpinner.setAdapter(categorySpinnerArrayAdapter);
         categorySpinner.setOnItemSelectedListener(this);
         categorySpinner.setVisibility(View.INVISIBLE);
@@ -67,7 +69,7 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         colorListString.add("YELLOW");
         colorListString.add("MAGENTA");
         final Spinner colorSpinner = (Spinner)findViewById(R.id.colorSpinner);
-        ArrayAdapter<String> colorSpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,colorListString);
+        final ArrayAdapter<String> colorSpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,colorListString);
         colorSpinner.setAdapter(colorSpinnerArrayAdapter);
         colorSpinner.setOnItemSelectedListener(this);
         colorSpinner.setVisibility(View.VISIBLE);
@@ -144,6 +146,9 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 if(categoryChecked){
                     databaseHelper.insertCategorytoCategoryTable(ediTextValue,selectedColor);
                     databaseHelper.createCategoryTable(ediTextValue);
+                    categorySpinnerArrayAdapter.add(ediTextValue);
+                    categorySpinnerArrayAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(),"spinner updated",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
@@ -177,10 +182,12 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         int viewId = parent.getId();
+
         switch (viewId){
             case R.id.categorySpinner:
                 selectedCategory = parent.getSelectedItem().toString();
                 Toast.makeText(getApplicationContext(),selectedCategory,Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.colorSpinner:
                 selectedColor = parent.getSelectedItem().toString();;
