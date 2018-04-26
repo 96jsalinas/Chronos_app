@@ -43,8 +43,27 @@ public class ManageCategories extends AppCompatActivity {
             models.add(new Model(categoryList.get(i),false));
         }
 
-        MyAdapter adapter = new MyAdapter(this,models);
+         final MyAdapter adapter = new MyAdapter(this,models);
+
+
         listView.setAdapter(adapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+//                int pos = position;
+//                Toast.makeText(getApplicationContext(), "delete category", Toast.LENGTH_SHORT).show();
+//               Model item = adapter.getItem(pos);
+//                adapter.remove(item);
+//                adapter.notifyDataSetChanged();
+//
+//
+//            }
+//        });
+
+
+
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
