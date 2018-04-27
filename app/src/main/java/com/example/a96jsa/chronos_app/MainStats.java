@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
+import java.util.AbstractQueue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,22 +35,20 @@ public class MainStats extends AppCompatActivity {
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        /*Produces error with database
+
 
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         ArrayList<String> categories = new ArrayList<>();
         categories = db.getCategories();
+        List<PieEntry> entries = new ArrayList<>();
         for(String category : categories){
             Float totalTime = (float) db.getCategoryTotalTime(category);
+
             entries.add(new PieEntry(totalTime,category));
-        }*/
+        }
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_main);
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(20,"Mex"));
-        entries.add(new PieEntry(10,"Finland"));
-        entries.add(new PieEntry(5,"Canada"));
-        entries.add(new PieEntry(40,"Russia"));
+
 
         Legend legend = pieChart.getLegend();
         legend.setTextSize(23);
