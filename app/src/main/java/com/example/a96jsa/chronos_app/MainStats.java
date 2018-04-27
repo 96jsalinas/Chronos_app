@@ -40,15 +40,18 @@ public class MainStats extends AppCompatActivity {
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         ArrayList<String> categories = new ArrayList<>();
         categories = db.getCategories();
-        List<PieEntry> entries = new ArrayList<>();
-        for(String category : categories){
-            Float totalTime = (float) db.getCategoryTotalTime(category);
 
-            entries.add(new PieEntry(totalTime,category));
-        }
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_main);
-
+        List<PieEntry> entries = new ArrayList<>();
+//        entries.add(new PieEntry(20,"Mex"));
+//        entries.add(new PieEntry(10,"Finland"));
+//        entries.add(new PieEntry(5,"Canada"));
+//        entries.add(new PieEntry(40,"Russia"));
+        for(String category : categories){
+            Float totalTime = (float) db.getCategoryTotalTime(category);
+            entries.add(new PieEntry(totalTime,category));
+        }
 
         Legend legend = pieChart.getLegend();
         legend.setTextSize(23);
