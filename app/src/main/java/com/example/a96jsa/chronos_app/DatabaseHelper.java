@@ -345,6 +345,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean deleteCategory(String tableName){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + tableName);
+        sqLiteDatabase.delete(CATEGORY_TABLE, "Type = ?",new String[]{tableName});
+
 
         return true;
     }
