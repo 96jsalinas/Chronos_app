@@ -153,11 +153,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getCategoryTotalTime(String category){
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] columns = {"category,totalTime"};
-        String selection = "category = ?";
-        String[] selectionArgs = {category};
-        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
-        int totalCategoryTime = 0;
+//        String[] columns = {"categoryName,totalTime"};
+//        String selection = "categoryName = ?";
+//        String[] selectionArgs = {category};
+//        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
+
+        Cursor cursor = db.rawQuery("SELECT Type,TotalTime FROM " +category,null);
+        // totalCategoryTime equals 10 just for testing since no data time has been recorded
+        int totalCategoryTime = 10;
 
         while(cursor.moveToNext()){
 
@@ -239,12 +242,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (activities.contains(activityName)){
-            return false;
+            return true;
            }
-//          else {
-//            insertCategoryTypes(tableName, activityName);
-//        }
-        return true;
+          else {
+            return false;
+        }
+
     }
 
     //Generate table for new category

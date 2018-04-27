@@ -142,17 +142,24 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
             @Override
             public void onClick(View v) {
                 String ediTextValue = editText.getText().toString();
-                Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+
                 if(categoryChecked){
                     databaseHelper.insertCategorytoCategoryTable(ediTextValue,selectedColor);
                     databaseHelper.createCategoryTable(ediTextValue);
                     categorySpinnerArrayAdapter.add(ediTextValue);
                     categorySpinnerArrayAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(),"spinner updated",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
-                    databaseHelper.insertActivityToActivityTable(ediTextValue,selectedColor);
+                    boolean checkActivity = databaseHelper.checkActivity(selectedCategory,ediTextValue);
+                    if(checkActivity){
+                        Toast.makeText(getApplicationContext(),"activity already exists",Toast.LENGTH_SHORT).show();
+                    }else{
+                        databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
+                        databaseHelper.insertActivityToActivityTable(ediTextValue,selectedColor);
+                        Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                    }
+
 
                 }
 
