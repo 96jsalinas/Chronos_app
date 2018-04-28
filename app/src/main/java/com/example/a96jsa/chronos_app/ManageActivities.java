@@ -3,26 +3,22 @@ package com.example.a96jsa.chronos_app;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Display;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-public class ManageCategories extends AppCompatActivity {
+public class ManageActivities extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private ListView listView;
@@ -30,40 +26,25 @@ public class ManageCategories extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_categories);
+        setContentView(R.layout.activity_manage_activities);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         listView = findViewById(R.id.listView);
 
+        String categoryName = getIntent().getStringExtra("categoryName");
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-        final ArrayList<String> categoryList = databaseHelper.getCategories();
+        final HashMap<String, String> activityList = databaseHelper.getActivities(categoryName);
         ArrayList<Model> models = new ArrayList<Model>();
-        models.add(new Model("Categories"));
-        for(int i=0;i<categoryList.size();++i){
-            models.add(new Model(categoryList.get(i),false));
+        models.add(new Model(categoryName));
+        Set set = activityList.entrySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            Map.Entry mentry = (Map.Entry)iterator.next();
+            models.add(new Model(mentry.getKey().toString(),false));
         }
 
-         final MyAdapter adapter = new MyAdapter(this,models,true);
-
-
+        final MyAdapter adapter = new MyAdapter(this,models,false);
         listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-//                int pos = position;
-//                Toast.makeText(getApplicationContext(), "delete category", Toast.LENGTH_SHORT).show();
-//               Model item = adapter.getItem(pos);
-//                adapter.remove(item);
-//                adapter.notifyDataSetChanged();
-//
-//
-//            }
-//        });
-
-
-
-
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,27 +98,6 @@ public class ManageCategories extends AppCompatActivity {
             }
         });
 
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void onClick(View view) {
-        Intent indivStats = new Intent(getBaseContext(),IndividualStats.class);
-        startActivity(indivStats);
     }
 }
