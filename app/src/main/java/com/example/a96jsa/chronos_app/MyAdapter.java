@@ -94,10 +94,12 @@ public class MyAdapter extends ArrayAdapter<Model> {
             titleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String category = modelsArrayList.get(position).getTitle();
-                    Intent intent = new Intent(parent.getContext(), ManageActivities.class);
-                    intent.putExtra("categoryName",category);
-                    parent.getContext().startActivity(intent);
+                    if(isCategoryList) {
+                        String category = modelsArrayList.get(position).getTitle();
+                        Intent intent = new Intent(parent.getContext(), ManageActivities.class);
+                        intent.putExtra("categoryName", category);
+                        parent.getContext().startActivity(intent);
+                    }
                 }
             });
 
@@ -119,16 +121,15 @@ public class MyAdapter extends ArrayAdapter<Model> {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(parent.getContext(), "Should delete category", Toast.LENGTH_SHORT).show();
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    databaseHelper.deleteCategory(category);
-                    remove(model);
-                    notifyDataSetChanged();
-                    Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
-
-
-
+                    if (isCategoryList) {
+                        Toast.makeText(parent.getContext(), "Should delete category", Toast.LENGTH_SHORT).show();
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        databaseHelper.deleteCategory(category);
+                        remove(model);
+                        notifyDataSetChanged();
+                        Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -136,11 +137,13 @@ public class MyAdapter extends ArrayAdapter<Model> {
             statsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(parent.getContext(),IndividualStats.class);
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    intent.putExtra("categoryName",category);
-                    parent.getContext().startActivity(intent);
+                    if(isCategoryList) {
+                        Intent intent = new Intent(parent.getContext(), IndividualStats.class);
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        parent.getContext().startActivity(intent);
+                    }
                 }
             });
         }
