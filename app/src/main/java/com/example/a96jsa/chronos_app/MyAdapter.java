@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ public class MyAdapter extends ArrayAdapter<Model> {
     private final ArrayList<Model> modelsArrayList;
     SQLiteDatabase database;
     DatabaseHelper databaseHelper;
+    String category;
+    String categoryColor;
 
 
 
@@ -44,6 +47,8 @@ public class MyAdapter extends ArrayAdapter<Model> {
         final Intent intent = new Intent();
         intent.setClass(parent.getContext(),ManageCategories.class);
 
+
+
         // 1. Create inflater
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,6 +57,7 @@ public class MyAdapter extends ArrayAdapter<Model> {
         View rowView = null;
         if(!modelsArrayList.get(position).isGroupHeader()){
             rowView = inflater.inflate(R.layout.target_item, parent, false);
+           // rowView.setBackgroundColor(Color.RED);
 
             // 3. Get title
             TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
@@ -63,6 +69,28 @@ public class MyAdapter extends ArrayAdapter<Model> {
                  //   Toast.makeText(parent.getContext(), "Should show activities of this category", Toast.LENGTH_SHORT).show();
                 }
             });
+          category = modelsArrayList.get(position).getTitle();
+          categoryColor = databaseHelper.getCategoryColor(category);
+//          if(categoryColor.contains("BLUE")){
+//              rowView.setBackgroundColor(Color.BLUE);
+//          }else{
+//              rowView.setBackgroundColor(Color.RED);
+//          }
+            switch (categoryColor){
+                case "BLUE":
+                    rowView.setBackgroundColor(Color.BLUE);
+                    break;
+                case "BLACK":
+                    rowView.setBackgroundColor(Color.BLACK);
+                    break;
+                case "YELLOW":
+                    rowView.setBackgroundColor(Color.YELLOW);
+                    break;
+                default:
+                    rowView.setBackgroundColor(Color.RED);
+                    break;
+            }
+
             ImageButton editButton = rowView.findViewById(R.id.edit_button);
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override

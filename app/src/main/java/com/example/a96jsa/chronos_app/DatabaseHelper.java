@@ -174,6 +174,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return totalCategoryTime;
     }
+   public String getCategoryColor(String category){
+       SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String [] projection = {"Type", "Color"};
+        String selection = "Type = ?";
+        String[] selectionArgs = {category};
+
+       Cursor cursor = sqLiteDatabase.query(CATEGORY_TABLE,projection,selection,selectionArgs,null,null,null);
+        String color = "";
+        while(cursor.moveToNext()){
+            color = cursor.getString(1);
+        }
+        return color;
+   }
+
 
     //Insert activity_activity_type values
 

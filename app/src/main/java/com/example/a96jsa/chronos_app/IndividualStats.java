@@ -73,7 +73,7 @@ public class IndividualStats extends AppCompatActivity {
 
 
         PieDataSet set = new PieDataSet(entries,"");
-        set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        set.setColors(new int[]{Color.BLUE,Color.BLACK,Color.YELLOW,Color.RED});
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
