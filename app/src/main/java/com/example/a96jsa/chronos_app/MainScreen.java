@@ -36,6 +36,7 @@ public class MainScreen extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView listView;
     private String startTime;
+    private String selectedCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +76,37 @@ public class MainScreen extends AppCompatActivity {
                 TextView selectedAc = findViewById(R.id.selectedAct);
                 selectedAc.setText(selectedActivity);
 
+                final ArrayList<String> categoryList = databaseHelper.getCategories();
+                for(int i=0;i<categoryList.size();++i){
+                    final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
+                    Set set = activityList.entrySet();
+                    Iterator iterator = set.iterator();
+                    while (iterator.hasNext()){
+                        Map.Entry mentry = (Map.Entry)iterator.next();
+                        String ac = mentry.getKey().toString();
+                        if(ac.equals(selectedActivity)){
+                            selectedCategory = categoryList.get(i);
+                        }
+                    }
+                }
+
           }
         });
 
         final TextView selectedAc = findViewById(R.id.selectedAct);
         selectedAc.setText(theActivityList.get(0));
+        for(int i=0;i<categoryList.size();++i){
+            final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
+            Set set = activityList.entrySet();
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()){
+                Map.Entry mentry = (Map.Entry)iterator.next();
+                String ac = mentry.getKey().toString();
+                if(ac.equals(selectedAc)){
+                    selectedCategory = categoryList.get(i);
+                }
+            }
+        }
         final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         pauseButton.setClickable(false);
@@ -117,7 +144,7 @@ public class MainScreen extends AppCompatActivity {
                 int minute = rightNow.get(Calendar.MINUTE);
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,"RED","Sport");
+                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 
