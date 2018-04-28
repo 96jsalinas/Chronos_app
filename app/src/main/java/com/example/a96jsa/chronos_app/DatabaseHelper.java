@@ -132,7 +132,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Sleeping', 'YELLOW', '10:51:09', '10:51:15', '5571', '18-Apr-2018', 'Leisure')");
 
-
     }
 
 
@@ -221,6 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //insert returns -1 if it failed, so it is possible to check this way if it did work
         long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
+
         addToTotalTime(activityName, totalTime, categoryName);
 
 
@@ -270,9 +270,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(CATEGORY_TABLE, contentValues, "Type = ?", new String[]{category});
         return updatedTotalTime;
     }
-
-
-
 
     //Insert category specific types, this methods needs also be called when a new category is created
     public boolean insertCategoryTypes (String tableName, String typeName, String color){

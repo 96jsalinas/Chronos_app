@@ -9,16 +9,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
+import java.util.AbstractQueue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,16 +37,42 @@ public class MainStats extends AppCompatActivity {
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        /*Produces error with database*/
 
-        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_main);
-        List<PieEntry> entries = new ArrayList<>();
+
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         ArrayList<String> categories = new ArrayList<>();
         categories = db.getCategories();
-        for(String category : categories) {
+
+
+        PieChart pieChart = (PieChart) findViewById(R.id.pie_chart_main);
+        ArrayList<Integer> arrayListColors = new ArrayList<>();
+        List<PieEntry> entries = new ArrayList<>();
+//        entries.add(new PieEntry(20,"Mex"));
+//        entries.add(new PieEntry(10,"Finland"));
+//        entries.add(new PieEntry(5,"Canada"));
+//        entries.add(new PieEntry(40,"Russia"));
+
+
+        for(String category : categories){
+
             Float totalTime = (float) db.getCategoryTotalTime(category);
-            entries.add(new PieEntry(totalTime, category));
+            String categoryColor = db.getCategoryColor(category);
+            switch (categoryColor){
+                case "BLUE":
+                    arrayListColors.add(Color.BLUE);
+                    break;
+                case "BLACK":
+                    arrayListColors.add(Color.BLACK);
+                    break;
+                case "YELLOW":
+                    arrayListColors.add(Color.YELLOW);
+                    break;
+                default:
+                    arrayListColors.add(Color.RED);
+                    break;
+            }
+
+            entries.add(new PieEntry(totalTime,category));
         }
 
 
@@ -54,7 +83,8 @@ public class MainStats extends AppCompatActivity {
 
 
         PieDataSet set = new PieDataSet(entries,"");
-        set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        //set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        set.setColors(arrayListColors);
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();

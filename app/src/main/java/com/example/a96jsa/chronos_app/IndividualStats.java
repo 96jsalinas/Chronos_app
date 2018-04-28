@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -21,25 +23,48 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IndividualStats extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    TextView categoryName_tv;
+    String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_stats);
-
+        categoryName = getIntent().getStringExtra("categoryName");
+        categoryName_tv = (TextView)findViewById(R.id.categoryName);
+        categoryName_tv.setText(categoryName);
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        HashMap<String,String> activityList = databaseHelper.getActivities(categoryName);
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_indiv);
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(20,"Mex"));
-        entries.add(new PieEntry(10,"Finland"));
-        entries.add(new PieEntry(5,"Canada"));
-        entries.add(new PieEntry(21,"Russia"));
+//        entries.add(new PieEntry(20,"Mex"));
+//        entries.add(new PieEntry(10,"Finland"));
+//        entries.add(new PieEntry(5,"Canada"));
+//        entries.add(new PieEntry(21,"Russia"));
+        if(activityList.size() > 0){
+            Toast.makeText(getApplicationContext(),"Not empty category", Toast.LENGTH_SHORT).show();
+            Set set = activityList.entrySet();
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()){
+                Map.Entry mentry = (Map.Entry)iterator.next();
+               // entries.add(new PieEntry(Integer.parseInt(mentry.getValue().toString()),mentry.getKey().toString()));
+                entries.add(new PieEntry(10,mentry.getKey().toString()));
+            }
+
+        }else {
+            Toast.makeText(getApplicationContext(),"Empty category", Toast.LENGTH_SHORT).show();
+        }
 
         Legend legend = pieChart.getLegend();
         legend.setTextSize(23);
@@ -48,7 +73,7 @@ public class IndividualStats extends AppCompatActivity {
 
 
         PieDataSet set = new PieDataSet(entries,"");
-        set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        set.setColors(new int[]{Color.BLUE,Color.BLACK,Color.YELLOW,Color.RED});
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
