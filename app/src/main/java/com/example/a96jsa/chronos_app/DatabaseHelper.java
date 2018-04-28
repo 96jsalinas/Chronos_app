@@ -188,6 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return color;
    }
 
+
     //Insert activity_activity_type values
 
     public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String categoryName){
