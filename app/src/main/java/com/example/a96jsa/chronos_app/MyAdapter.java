@@ -96,6 +96,10 @@ public class MyAdapter extends ArrayAdapter<Model> {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(parent.getContext(),Customize.class);
+                    String category = modelsArrayList.get(position).getTitle();
+                    Model model = modelsArrayList.get(position);
+                    intent.putExtra("categoryName",category);
+                    intent.putExtra("preexisting","true");
                     parent.getContext().startActivity(intent);
                 }
             });
