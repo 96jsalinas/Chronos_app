@@ -28,10 +28,11 @@ public class MyAdapter extends ArrayAdapter<Model> {
     DatabaseHelper databaseHelper;
     String category;
     String categoryColor;
+    String parentCategory;
 
 
 
-    public MyAdapter(Context context, ArrayList<Model> modelsArrayList,boolean isCategoryList) {
+    public MyAdapter(Context context, ArrayList<Model> modelsArrayList,boolean isCategoryList, String theparentCategory) {
 
         super(context, R.layout.target_item, modelsArrayList);
 
@@ -39,7 +40,7 @@ public class MyAdapter extends ArrayAdapter<Model> {
         this.context = context;
         this.modelsArrayList = modelsArrayList;
         databaseHelper = new DatabaseHelper(context);
-
+        parentCategory = theparentCategory;
 
     }
 
@@ -70,6 +71,9 @@ public class MyAdapter extends ArrayAdapter<Model> {
               categoryColor = databaseHelper.getCategoryColor(category);
           }else {
               categoryColor = "BLUE";
+              if(parentCategory!=null){
+                  categoryColor=databaseHelper.getCategoryColor(parentCategory);
+              }
           }
 //          if(categoryColor.contains("BLUE")){
 //              rowView.setBackgroundColor(Color.BLUE);

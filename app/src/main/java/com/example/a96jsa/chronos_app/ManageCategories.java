@@ -43,7 +43,7 @@ public class ManageCategories extends AppCompatActivity {
             models.add(new Model(categoryList.get(i),false));
         }
 
-         final MyAdapter adapter = new MyAdapter(this,models,true);
+         final MyAdapter adapter = new MyAdapter(this,models,true,null);
 
 
         listView.setAdapter(adapter);

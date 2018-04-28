@@ -43,7 +43,7 @@ public class ManageActivities extends AppCompatActivity {
             models.add(new Model(mentry.getKey().toString(),false));
         }
 
-        final MyAdapter adapter = new MyAdapter(this,models,false);
+        final MyAdapter adapter = new MyAdapter(this,models,false,categoryName);
         listView.setAdapter(adapter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
