@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -90,7 +91,7 @@ public class History extends AppCompatActivity {
         //Selection for last week, can be found in minus 7
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_YEAR, -7);
+        cal.add(Calendar.DAY_OF_YEAR, -21);
         Date daysBeforeDate = cal.getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(daysBeforeDate);
@@ -109,6 +110,13 @@ public class History extends AppCompatActivity {
 
         historyView.setAdapter(adapter);
 
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), EditHistory.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

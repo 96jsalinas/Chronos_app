@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create table "+ ACTIVITY_TABLE +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, activityName TEXT, Color TEXT, " +
                 " startTime TEXT, endTime TEXT, totalTime TEXT, date TEXT, categoryName TEXT)");
 
-        sqLiteDatabase.execSQL("create table "+ CATEGORY_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT)");
+        sqLiteDatabase.execSQL("create table "+ CATEGORY_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
 
         sqLiteDatabase.execSQL("create table "+ SPORT_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
 
@@ -77,10 +77,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("create table "+ LEISURE_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Sport', 'RED')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Work', 'BLUE')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Housework', 'BLACK')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color) VALUES('Leisure', 'YELLOW')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotlaTime) VALUES('Sport', 'RED', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotlaTime) VALUES('Work', 'BLUE', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotlaTime) VALUES('Housework', 'BLACK', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotlaTime) VALUES('Leisure', 'YELLOW', '0')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Running', 'RED','0')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Walking', 'BLUE','0')");
@@ -177,7 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Insert activity_activity_type values
 
-    public boolean insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String categoryName){
+    public void insertActivityData(SQLiteDatabase sqLiteDatabase, String activityName, String totalTime, String startTime, String endTime, String date, String color, String categoryName){
 
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -191,16 +191,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //insert returns -1 if it failed, so it is possible to check this way if it did work
         long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
+        addToTotalTime(activityName, totalTime, categoryName);
 
-        if (result == -1){
-            return false;
-        }else{
-            return true;
-        }
 
 
     }
-    public String addToTotalTime(String activityName, String time, String category) {
+    public void addToTotalTime(String activityName, String time, String category) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String currentTotalTime = new String();
         Integer additionalTime;
@@ -219,9 +215,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("TotalTime", updatedTotalTime.toString());
         sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{activityName});
+        addTimeToActivityTable(category, time);
 
-        return updatedTotalTime.toString();
     }
+
+    public Integer addTimeToActivityTable (String category, String timeToAdd){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String totalTime = new String();
+        Integer additionalTime;
+        Integer updatedTotalTime;
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CATEGORY_TABLE + " where Type = ?", new String[]{category});
+
+        additionalTime = Integer.parseInt(timeToAdd);
+        while (cursor.moveToNext()){
+            totalTime = cursor.getString(3);
+        }
+        updatedTotalTime = additionalTime+ Integer.parseInt(totalTime);
+
+
+
+        String storedTotalTime = updatedTotalTime.toString();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("TotalTime", updatedTotalTime.toString());
+        sqLiteDatabase.update(CATEGORY_TABLE, contentValues, "Type = ?", new String[]{category});
+        return updatedTotalTime;
+    }
+
 
 
 
