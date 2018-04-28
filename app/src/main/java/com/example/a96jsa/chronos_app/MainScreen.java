@@ -102,7 +102,7 @@ public class MainScreen extends AppCompatActivity {
             while (iterator.hasNext()){
                 Map.Entry mentry = (Map.Entry)iterator.next();
                 String ac = mentry.getKey().toString();
-                if(ac.equals(selectedAc)){
+                if(ac.equals(selectedAc.getText())){
                     selectedCategory = categoryList.get(i);
                 }
             }
