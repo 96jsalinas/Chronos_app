@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -42,7 +43,7 @@ public class MainStats extends AppCompatActivity {
         categories = db.getCategories();
 
 
-        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_main);
+        PieChart pieChart = (PieChart) findViewById(R.id.pie_chart_main);
         List<PieEntry> entries = new ArrayList<>();
 //        entries.add(new PieEntry(20,"Mex"));
 //        entries.add(new PieEntry(10,"Finland"));
