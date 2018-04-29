@@ -48,17 +48,12 @@ public class IndividualStats extends AppCompatActivity {
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_indiv);
         List<PieEntry> entries = new ArrayList<>();
-//        entries.add(new PieEntry(20,"Mex"));
-//        entries.add(new PieEntry(10,"Finland"));
-//        entries.add(new PieEntry(5,"Canada"));
-//        entries.add(new PieEntry(21,"Russia"));
         if(activityList.size() > 0){
             Toast.makeText(getApplicationContext(),"Not empty category", Toast.LENGTH_SHORT).show();
             Set set = activityList.entrySet();
             Iterator iterator = set.iterator();
             while (iterator.hasNext()){
                 Map.Entry mentry = (Map.Entry)iterator.next();
-               // entries.add(new PieEntry(Integer.parseInt(mentry.getValue().toString()),mentry.getKey().toString()));
                 entries.add(new PieEntry(10,mentry.getKey().toString()));
             }
 

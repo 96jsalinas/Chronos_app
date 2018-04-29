@@ -70,6 +70,7 @@ public class MyAdapter extends ArrayAdapter<Model> {
           if(isCategoryList) {
               categoryColor = databaseHelper.getCategoryColor(category);
           }else {
+              category=parentCategory;
               categoryColor = "BLUE";
               if(parentCategory!=null){
                   categoryColor=databaseHelper.getCategoryColor(parentCategory);
@@ -126,13 +127,19 @@ public class MyAdapter extends ArrayAdapter<Model> {
                 @Override
                 public void onClick(View v) {
                     if (isCategoryList) {
-                        Toast.makeText(parent.getContext(), "Should delete category", Toast.LENGTH_SHORT).show();
                         String category = modelsArrayList.get(position).getTitle();
                         Model model = modelsArrayList.get(position);
                         databaseHelper.deleteCategory(category);
                         remove(model);
                         notifyDataSetChanged();
                         Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
+                    }else{
+                        String activity = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        databaseHelper.deleteData(category,activity);
+                        remove(model);
+                        notifyDataSetChanged();
+                        Toast.makeText(parent.getContext(), activity + " has been removed", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
