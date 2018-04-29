@@ -23,8 +23,11 @@ public class TimerService extends Service{
     long tstart;
     long tstop;
     long elapsedTime;
+    long savedTime;
     private static Timer timer = new Timer();
     int elapsedTimeSeconds;
+
+    private boolean isCounting;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -40,15 +43,35 @@ public class TimerService extends Service{
     }
 
     private void startService() {
-        timer.schedule(new mainTask(),0,500);
+        timer.schedule(new mainTask(),0,300);
+        isCounting = true;
+
+    }
+    boolean isCounting(){
+        return isCounting;
+    }
+    void resumeService(){
+        tstart = System.currentTimeMillis();
+        timer = new Timer();
+        timer.schedule(new mainTask(),0,300);
 
     }
     void stopService(){
         tstop = System.currentTimeMillis();
         elapsedTime = tstop - tstart;
-        elapsedTimeSeconds = (int)elapsedTime/1000;
+
+        if(savedTime > 0){
+            savedTime = elapsedTime + savedTime;
+        }else {
+            savedTime = elapsedTime;
+        }
+        tstart = 1;
+
+
+        //elapsedTimeSeconds = (int)savedTime/1000;
+        elapsedTimeSeconds = (int)savedTime/1000;
         timer.cancel();
-        Log.d("TIMER SERVICE","total time" + Integer.toString((elapsedTimeSeconds)));
+        Log.d("TIMER SERVICE","total time seconds" + Integer.toString((elapsedTimeSeconds)));
 
     }
     Long getElapsedTimeSeconds(){

@@ -45,6 +45,7 @@ public class MainScreen extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +130,14 @@ public class MainScreen extends AppCompatActivity {
             public void onClick(View v) {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime());
                 simpleChronometer.start();
-                timerService.onCreate();
+
+                if(timerService.isCounting()){
+                    timerService.resumeService();
+                    Toast.makeText(getApplicationContext(),"chronometer resumed",Toast.LENGTH_SHORT).show();
+                }else {
+                    timerService.onCreate();
+                }
+
 
                 playButton.setClickable(false);
                 pauseButton.setClickable(true);
@@ -148,7 +156,7 @@ public class MainScreen extends AppCompatActivity {
                 timerService.stopService();
                 simpleChronometer.stop();
                 if(timerService != null){
-                    simpleChronometer.setBase(timerService.elapsedTime);
+                    simpleChronometer.setBase( timerService.getElapsedTimeSeconds());
                 }
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
