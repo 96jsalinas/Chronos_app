@@ -41,6 +41,7 @@ public class MainScreen extends AppCompatActivity {
     private String selectedCategory;
      Chronometer simpleChronometer;
 
+     TextView chronometer_tv;
 
 
 
@@ -57,6 +58,7 @@ public class MainScreen extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         final TimerService timerService = new TimerService();
+        chronometer_tv = (TextView)findViewById(R.id.chronometer_tv);
 
 
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
@@ -130,7 +132,7 @@ public class MainScreen extends AppCompatActivity {
             public void onClick(View v) {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime());
                 simpleChronometer.start();
-
+                //check if chronometer has recorded time
                 if(timerService.isCounting()){
                     timerService.resumeService();
                     Toast.makeText(getApplicationContext(),"chronometer resumed",Toast.LENGTH_SHORT).show();
@@ -155,8 +157,11 @@ public class MainScreen extends AppCompatActivity {
             public void onClick(View v) {
                 timerService.stopService();
                 simpleChronometer.stop();
+                //check if chronometer has been initialized
                 if(timerService != null){
-                    simpleChronometer.setBase( timerService.getElapsedTimeSeconds());
+                    //simpleChronometer.setBase( timerService.getElapsedTimeSeconds());
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+                    chronometer_tv.setText(Integer.toString(timerService.getElapsedTimeSeconds()));
                 }
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon

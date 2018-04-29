@@ -74,8 +74,8 @@ public class TimerService extends Service{
         Log.d("TIMER SERVICE","total time seconds" + Integer.toString((elapsedTimeSeconds)));
 
     }
-    Long getElapsedTimeSeconds(){
-        return elapsedTime;
+    int getElapsedTimeSeconds(){
+        return elapsedTimeSeconds;
     }
 
 

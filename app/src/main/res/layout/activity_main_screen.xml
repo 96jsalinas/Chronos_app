@@ -71,11 +71,19 @@
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="368dp"
-                android:layout_height="380dp"
+                android:layout_height="320dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="64dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pauseBut" />
+
+            <TextView
+                android:id="@+id/chronometer_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                tools:layout_editor_absoluteX="92dp"
+                tools:layout_editor_absoluteY="99dp" />
 
         </android.support.constraint.ConstraintLayout>
 
