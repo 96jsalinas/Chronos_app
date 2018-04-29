@@ -1,7 +1,9 @@
 package com.example.a96jsa.chronos_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,9 +39,14 @@ public class MainScreen extends AppCompatActivity {
     private ListView listView;
     private String startTime;
     private String selectedCategory;
+     Chronometer simpleChronometer;
+
+
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
@@ -47,6 +54,9 @@ public class MainScreen extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         listView = findViewById(R.id.listView);
+
+        final TimerService timerService = new TimerService();
+
 
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
@@ -107,15 +117,20 @@ public class MainScreen extends AppCompatActivity {
                 }
             }
         }
-        final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
+        simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         pauseButton.setClickable(false);
         final ImageButton playButton = findViewById(R.id.playBut);
+        if(savedInstanceState != null){
+            simpleChronometer.setBase(savedInstanceState.getLong("elapsedTime"));
+        }
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime());
                 simpleChronometer.start();
+                timerService.onCreate();
+
                 playButton.setClickable(false);
                 pauseButton.setClickable(true);
                 Calendar rightNow = Calendar.getInstance();
@@ -130,7 +145,11 @@ public class MainScreen extends AppCompatActivity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timerService.stopService();
                 simpleChronometer.stop();
+                if(timerService != null){
+                    simpleChronometer.setBase(timerService.elapsedTime);
+                }
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
                 String totalTime = Long.toString(elapsedMillis);
@@ -144,7 +163,7 @@ public class MainScreen extends AppCompatActivity {
                 int minute = rightNow.get(Calendar.MINUTE);
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                //databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 
@@ -203,6 +222,52 @@ public class MainScreen extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putLong("elapsedTime",SystemClock.elapsedRealtime());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                //simpleChronometer.
+//            }
+//        }).start();
+        Toast.makeText(getApplicationContext(),"on stop called",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        simpleChronometer.setBase(213);
+        Toast.makeText(getApplicationContext(),"on reume called",Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(getApplicationContext(),"on restart called",Toast.LENGTH_SHORT).show();
     }
 
     @Override
