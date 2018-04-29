@@ -13,12 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,6 +111,18 @@ public class History extends AppCompatActivity {
 
 
         historyView.setAdapter(adapter);
+
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+            {
+                Object name = historyView.getItemAtPosition(position);
+                Intent intent = new Intent (getApplicationContext(), EditHistory.class);
+                intent.putExtra("Values", (Serializable) name);
+                startActivity(intent);
+            }
+        });
 
     }
 
