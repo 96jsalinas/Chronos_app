@@ -23,21 +23,24 @@ public class MyAdapter extends ArrayAdapter<Model> {
 
     private final Context context;
     private final ArrayList<Model> modelsArrayList;
+    private boolean isCategoryList = true;
     SQLiteDatabase database;
     DatabaseHelper databaseHelper;
     String category;
     String categoryColor;
+    String parentCategory;
 
 
 
-    public MyAdapter(Context context, ArrayList<Model> modelsArrayList) {
+    public MyAdapter(Context context, ArrayList<Model> modelsArrayList,boolean isCategoryList, String theparentCategory) {
 
         super(context, R.layout.target_item, modelsArrayList);
 
+        this.isCategoryList = isCategoryList;
         this.context = context;
         this.modelsArrayList = modelsArrayList;
         databaseHelper = new DatabaseHelper(context);
-
+        parentCategory = theparentCategory;
 
     }
 
@@ -63,14 +66,16 @@ public class MyAdapter extends ArrayAdapter<Model> {
             TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
             // 4. Set the text for textView
             titleView.setText(modelsArrayList.get(position).getTitle());
-            titleView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                 //   Toast.makeText(parent.getContext(), "Should show activities of this category", Toast.LENGTH_SHORT).show();
-                }
-            });
           category = modelsArrayList.get(position).getTitle();
-          categoryColor = databaseHelper.getCategoryColor(category);
+          if(isCategoryList) {
+              categoryColor = databaseHelper.getCategoryColor(category);
+          }else {
+              category=parentCategory;
+              categoryColor = "BLUE";
+              if(parentCategory!=null){
+                  categoryColor=databaseHelper.getCategoryColor(parentCategory);
+              }
+          }
 //          if(categoryColor.contains("BLUE")){
 //              rowView.setBackgroundColor(Color.BLUE);
 //          }else{
@@ -91,11 +96,28 @@ public class MyAdapter extends ArrayAdapter<Model> {
                     break;
             }
 
+            titleView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isCategoryList) {
+                        String category = modelsArrayList.get(position).getTitle();
+                        Intent intent = new Intent(parent.getContext(), ManageActivities.class);
+                        intent.putExtra("categoryName", category);
+                        parent.getContext().startActivity(intent);
+                    }
+                }
+            });
+
+
             ImageButton editButton = rowView.findViewById(R.id.edit_button);
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(parent.getContext(),Customize.class);
+                    String category = modelsArrayList.get(position).getTitle();
+                    Model model = modelsArrayList.get(position);
+                    intent.putExtra("categoryName",category);
+                    intent.putExtra("preexisting","true");
                     parent.getContext().startActivity(intent);
                 }
             });
@@ -104,16 +126,21 @@ public class MyAdapter extends ArrayAdapter<Model> {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(parent.getContext(), "Should delete category", Toast.LENGTH_SHORT).show();
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    databaseHelper.deleteCategory(category);
-                    remove(model);
-                    notifyDataSetChanged();
-                    Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
-
-
-
+                    if (isCategoryList) {
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        databaseHelper.deleteCategory(category);
+                        remove(model);
+                        notifyDataSetChanged();
+                        Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
+                    }else{
+                        String activity = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        databaseHelper.deleteData(category,activity);
+                        remove(model);
+                        notifyDataSetChanged();
+                        Toast.makeText(parent.getContext(), activity + " has been removed", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -121,11 +148,13 @@ public class MyAdapter extends ArrayAdapter<Model> {
             statsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(parent.getContext(),IndividualStats.class);
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    intent.putExtra("categoryName",category);
-                    parent.getContext().startActivity(intent);
+                    if(isCategoryList) {
+                        Intent intent = new Intent(parent.getContext(), IndividualStats.class);
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        parent.getContext().startActivity(intent);
+                    }
                 }
             });
         }

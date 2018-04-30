@@ -34,6 +34,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
     Boolean activityChecked = false;
     private DrawerLayout mDrawerLayout;
     DatabaseHelper databaseHelper;
+    String categoryName;
+    Boolean preexisting=false;
 
     ArrayAdapter<String> categorySpinnerArrayAdapter;
 
@@ -41,15 +43,19 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customize);
-
+        categoryName = getIntent().getStringExtra("categoryName");
         mDrawerLayout = findViewById(R.id.drawer_layout);
         submitButton = (Button) findViewById(R.id.submitButton);
         editText = (EditText)findViewById(R.id.editText);
+        editText.setText(categoryName);
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
         RadioButton categoryButton = findViewById(R.id.catRadioButton);
         RadioButton activityButton = findViewById(R.id.catRadioButton);
         radioGroup.check(categoryButton.getId());
-
+        String preexistingStr = getIntent().getStringExtra("preexisting");
+        if(preexistingStr!=null){
+            preexisting=true;
+        }
         databaseHelper = new DatabaseHelper(getApplicationContext());
 
         ArrayList<String> categoryList = databaseHelper.getCategories();
@@ -138,6 +144,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 }
             }
         });
+
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,43 +1,51 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-public class History extends AppCompatActivity {
+public class ManageActivities extends AppCompatActivity {
+
     private DrawerLayout mDrawerLayout;
-    private ListView historyView;
-    private DatabaseHelper databaseHelper;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
-
+        setContentView(R.layout.activity_manage_activities);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        historyView = findViewById(R.id.historyList);
-        databaseHelper = new DatabaseHelper(this);
+        listView = findViewById(R.id.listView);
+
+        String categoryName = getIntent().getStringExtra("categoryName");
+        final DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        final HashMap<String, String> activityList = databaseHelper.getActivities(categoryName);
+        ArrayList<Model> models = new ArrayList<Model>();
+        models.add(new Model(categoryName));
+        Set set = activityList.entrySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            Map.Entry mentry = (Map.Entry)iterator.next();
+            models.add(new Model(mentry.getKey().toString(),false));
+        }
+
+        final MyAdapter adapter = new MyAdapter(this,models,false,categoryName);
+        listView.setAdapter(adapter);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -81,63 +89,15 @@ public class History extends AppCompatActivity {
                     }
                 });
 
-
-        //Selection for last week, can be found in minus 7
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_YEAR, -20);
-        Date daysBeforeDate = cal.getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = df.format(daysBeforeDate);
-
-        final List<Map<String, String>> data = databaseHelper.showHistory(formattedDate);
-
-
-
-        SimpleAdapter adapter = new SimpleAdapter(this, data,
-                android.R.layout.simple_list_item_2,
-                new String[] {"name", "date"},
-                new int[] {android.R.id.text1,
-                        android.R.id.text2});
-        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
-
-
-        historyView.setAdapter(adapter);
-
-        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        FloatingActionButton launchCustomize = (FloatingActionButton) findViewById(R.id.fab);
+        launchCustomize.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-            {
-                Object name = historyView.getItemAtPosition(position);
-                Intent intent = new Intent (getApplicationContext(), EditHistory.class);
-                intent.putExtra("Values", (Serializable) name);
-                startActivity(intent);
+            public void onClick(View v) {
+                Intent dynIntent = new Intent(getBaseContext(),Customize.class);
+                startActivity(dynIntent);
             }
         });
 
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_screen, menu);
-        return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void onClick(View view) {
-        Intent hist = new Intent(getBaseContext(),EditHistory.class);
-        startActivity(hist);
-    }
-
 }
