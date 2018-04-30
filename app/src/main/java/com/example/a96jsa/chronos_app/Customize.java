@@ -32,6 +32,7 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
     Button submitButton;
     Boolean categoryChecked = true;
     Boolean activityChecked = false;
+    private Boolean isActivity=false;
     private DrawerLayout mDrawerLayout;
     DatabaseHelper databaseHelper;
     String categoryName;
@@ -47,25 +48,20 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         mDrawerLayout = findViewById(R.id.drawer_layout);
         submitButton = (Button) findViewById(R.id.submitButton);
         editText = (EditText)findViewById(R.id.editText);
-        editText.setText(categoryName);
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        RadioButton categoryButton = findViewById(R.id.catRadioButton);
-        RadioButton activityButton = findViewById(R.id.catRadioButton);
-        radioGroup.check(categoryButton.getId());
-        String preexistingStr = getIntent().getStringExtra("preexisting");
-        if(preexistingStr!=null){
-            preexisting=true;
-        }
-        databaseHelper = new DatabaseHelper(getApplicationContext());
 
+        databaseHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<String> categoryList = databaseHelper.getCategories();
 
+        String isAnActivity = getIntent().getStringExtra("isActivity");
+        final String oldname = getIntent().getStringExtra("activityName");
+        RadioGroup radioGroup = findViewById(R.id.radioGroup);
+        RadioButton categoryButton = findViewById(R.id.catRadioButton);
+        RadioButton activityButton = findViewById(R.id.actRadioButton);
         final Spinner categorySpinner = (Spinner)findViewById(R.id.categorySpinner);
         categorySpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categoryList);
         categorySpinner.setAdapter(categorySpinnerArrayAdapter);
         categorySpinner.setOnItemSelectedListener(this);
         categorySpinner.setVisibility(View.INVISIBLE);
-
         //spinner
 
         ArrayList<String> colorListString = new ArrayList<>();
@@ -79,6 +75,30 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         colorSpinner.setAdapter(colorSpinnerArrayAdapter);
         colorSpinner.setOnItemSelectedListener(this);
         colorSpinner.setVisibility(View.VISIBLE);
+
+
+
+        if(isAnActivity!=null){
+            isActivity=true;
+            editText.setText(oldname);
+            radioGroup.check(activityButton.getId());
+            activityChecked = true;
+            categoryChecked = false;
+            Toast.makeText(getApplicationContext(),"activity checked",Toast.LENGTH_SHORT).show();
+            categorySpinner.setVisibility(View.VISIBLE);
+            colorSpinner.setVisibility(View.INVISIBLE);
+            categoryButton.setEnabled(false);
+        }else {
+            editText.setText(categoryName);
+            radioGroup.check(categoryButton.getId());
+            activityButton.setEnabled(false);
+        }
+
+        String preexistingStr = getIntent().getStringExtra("preexisting");
+        if(preexistingStr!=null){
+            preexisting=true;
+        }
+
 
 
 
@@ -152,23 +172,35 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 String ediTextValue = editText.getText().toString();
 
                 if(categoryChecked){
-                    databaseHelper.insertCategorytoCategoryTable(ediTextValue,selectedColor);
-                    databaseHelper.createCategoryTable(ediTextValue);
-                    categorySpinnerArrayAdapter.add(ediTextValue);
-                    categorySpinnerArrayAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                    if(preexisting){
+                        databaseHelper.editCategory(categoryName,ediTextValue,selectedColor);
+                    }else {
+                        databaseHelper.insertCategorytoCategoryTable(ediTextValue, selectedColor);
+                        databaseHelper.createCategoryTable(ediTextValue);
+                        categorySpinnerArrayAdapter.add(ediTextValue);
+                        categorySpinnerArrayAdapter.notifyDataSetChanged();
+                        Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
-                    boolean checkActivity = databaseHelper.checkActivity(selectedCategory,ediTextValue);
-                    if(checkActivity){
-                        Toast.makeText(getApplicationContext(),"activity already exists",Toast.LENGTH_SHORT).show();
-                    }else{
-                        databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
-                        databaseHelper.insertActivityToActivityTable(ediTextValue,selectedColor);
-                        Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                    if(preexisting) {
+                        boolean flag;
+                        if(categoryName.equals(selectedCategory)){
+                            flag=false;
+                        }else {
+                            flag=true;
+                        }
+                        databaseHelper.updateTypeData(categoryName,oldname,ediTextValue,selectedColor,selectedCategory,flag);
+                    }else {
+                        boolean checkActivity = databaseHelper.checkActivity(selectedCategory, ediTextValue);
+                        if (checkActivity) {
+                            Toast.makeText(getApplicationContext(), "activity already exists", Toast.LENGTH_SHORT).show();
+                        } else {
+                            databaseHelper.insertCategoryTypes(selectedCategory, ediTextValue, selectedColor);
+                            databaseHelper.insertActivityToActivityTable(ediTextValue, selectedColor);
+                            Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                        }
                     }
-
-
                 }
 
             }

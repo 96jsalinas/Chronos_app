@@ -176,13 +176,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        String[] selectionArgs = {category};
 //        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
 
-        Cursor cursor = db.rawQuery("SELECT Type,TotalTime FROM " +category,null);
+        Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + CATEGORY_TABLE + " where Type = ? ",new String[]{category});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
-        int totalCategoryTime = 10;
+        int totalCategoryTime = 0;
 
         while(cursor.moveToNext()){
 
-            int cursorTime = Integer.parseInt(cursor.getString(1));
+            int cursorTime = Integer.parseInt(cursor.getString(0));
             totalCategoryTime += cursorTime;
 
         }
@@ -199,7 +199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT totalTime FROM " +ACTIVITY_TABLE + " WHERE activityName = ?",new String[]{activity});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
-        int totalActivityTime = 10;
+        int totalActivityTime = 0;
 
         while(cursor.moveToNext()){
 
@@ -427,30 +427,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(CATEGORY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Change name of responding table
-        sqLiteDatabase.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName,
-                null);
+        if(!oldName.equals(newName)) {
+            sqLiteDatabase.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName);
+        }
     }
 
     //Update types for specific category
 
     public void updateTypeData (String tableName, String oldName, String newName, String newColor, String newCategory, boolean flag){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        String id = new String();
+        String oldID = new String();
+        String newID = new String();
         //Get id from activity_activity_type type so it can be updated
         Cursor res = sqLiteDatabase.rawQuery("select ID from " + tableName + " where Type = ?", new String[]{oldName});
         while (res.moveToNext()){
-             id = res.getString(0);
+             oldID = res.getString(0);
         }
-
+        newID = oldID+oldID;
         //Update name
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", id);
+        contentValues.put("ID", newID);
         contentValues.put("Type", newName);
         contentValues.put ("Color", newColor);
-        sqLiteDatabase.update(tableName, contentValues, "ID = ?", new String[]{id});
+        sqLiteDatabase.update(tableName, contentValues, "ID = ?", new String[]{oldID});
 
         if (flag) {
-            sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{id});
+            sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{newID});
             deleteData(tableName, newName);
         }
 

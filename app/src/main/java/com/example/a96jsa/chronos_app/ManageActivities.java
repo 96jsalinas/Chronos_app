@@ -94,6 +94,7 @@ public class ManageActivities extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent dynIntent = new Intent(getBaseContext(),Customize.class);
+                dynIntent.putExtra("isActivity","true");
                 startActivity(dynIntent);
             }
         });

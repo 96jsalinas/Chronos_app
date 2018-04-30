@@ -113,12 +113,23 @@ public class MyAdapter extends ArrayAdapter<Model> {
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(parent.getContext(),Customize.class);
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    intent.putExtra("categoryName",category);
-                    intent.putExtra("preexisting","true");
-                    parent.getContext().startActivity(intent);
+                    if(isCategoryList) {
+                        Intent intent = new Intent(parent.getContext(), Customize.class);
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        intent.putExtra("preexisting", "true");
+                        parent.getContext().startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(parent.getContext(), Customize.class);
+                        String activity = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        intent.putExtra("preexisting", "true");
+                        intent.putExtra("isActivity","true");
+                        intent.putExtra("activityName",activity);
+                        parent.getContext().startActivity(intent);
+                    }
                 }
             });
 
