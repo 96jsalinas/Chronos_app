@@ -81,14 +81,6 @@ public class History extends AppCompatActivity {
                     }
                 });
 
-        FloatingActionButton launchCustomize = (FloatingActionButton) findViewById(R.id.fab);
-        launchCustomize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dynIntent = new Intent(getBaseContext(),EditHistory.class);
-                startActivity(dynIntent);
-            }
-        });
 
         //Selection for last week, can be found in minus 7
         Calendar cal = Calendar.getInstance();
