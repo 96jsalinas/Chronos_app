@@ -102,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Sleeping', 'YELLOW','0')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Running', 'RED', '10:49:45', '10:49:51', '5571', '18-Apr-2018', 'Sport')");
+                "Values('Running', 'RED', '10:49:45', '10:49:57', '1242', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Walking', 'BLUE', '10:49:51', '10:49:57', '5571', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
@@ -189,6 +189,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return totalCategoryTime;
     }
+
+    public int getActivityTotalTime(String activity){
+        SQLiteDatabase db = this.getWritableDatabase();
+//        String[] columns = {"categoryName,totalTime"};
+//        String selection = "categoryName = ?";
+//        String[] selectionArgs = {category};
+//        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
+
+        Cursor cursor = db.rawQuery("SELECT totalTime FROM " +ACTIVITY_TABLE + " WHERE activityName = ?",new String[]{activity});
+        // totalCategoryTime equals 10 just for testing since no data time has been recorded
+        int totalActivityTime = 10;
+
+        while(cursor.moveToNext()){
+
+            int cursorTime = Integer.parseInt(cursor.getString(0));
+            totalActivityTime += cursorTime;
+
+        }
+
+        return totalActivityTime;
+    }
+
+
+
    public String getCategoryColor(String category){
        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String [] projection = {"Type", "Color"};
@@ -385,10 +409,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return possibleActivityResultList;
     }
 
+    //Update types for specific category
+    public void editCategory (String oldName, String newName, String newColor){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String id = new String();
+        //Get id from activity_activity_type type so it can be updated
+        Cursor res = sqLiteDatabase.rawQuery("select ID from " + CATEGORY_TABLE + " where Type = ?", new String[]{oldName});
+        while (res.moveToNext()){
+            id = res.getString(0);
+        }
 
+        //Update name
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
+        contentValues.put("Type", newName);
+        contentValues.put("Color", newColor);
+        sqLiteDatabase.update(CATEGORY_TABLE, contentValues, "ID = ?", new String[]{id});
+
+        //Change name of responding table
+        sqLiteDatabase.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName,
+                null);
+    }
 
     //Update types for specific category
-    public boolean updateTypeData (String tableName, String oldName, String newName){
+
+    public void updateTypeData (String tableName, String oldName, String newName, String newColor, String newCategory, boolean flag){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
         //Get id from activity_activity_type type so it can be updated
@@ -401,10 +446,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", id);
         contentValues.put("Type", newName);
+        contentValues.put ("Color", newColor);
         sqLiteDatabase.update(tableName, contentValues, "ID = ?", new String[]{id});
 
+        if (flag) {
+            sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{id});
+            deleteData(tableName, newName);
+        }
 
-        return true;
     }
 
     //Delete types of activities / Category
