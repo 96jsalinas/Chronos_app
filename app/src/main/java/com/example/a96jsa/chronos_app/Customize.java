@@ -177,12 +177,17 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 if(categoryChecked){
                     if(preexisting){
                         databaseHelper.editCategory(categoryName,ediTextValue,selectedColor);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        Toast.makeText(getApplicationContext(), "data edited", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
                     }else {
                         databaseHelper.insertCategorytoCategoryTable(ediTextValue, selectedColor);
                         databaseHelper.createCategoryTable(ediTextValue);
                         categorySpinnerArrayAdapter.add(ediTextValue);
                         categorySpinnerArrayAdapter.notifyDataSetChanged();
                         Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
                     }
                 }
                 else {
@@ -194,6 +199,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                             flag=true;
                         }
                         databaseHelper.updateTypeData(categoryName,oldname,ediTextValue,selectedColor,selectedCategory,flag);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
                     }else {
                         boolean checkActivity = databaseHelper.checkActivity(selectedCategory, ediTextValue);
                         if (checkActivity) {
@@ -202,6 +209,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                             databaseHelper.insertCategoryTypes(selectedCategory, ediTextValue, selectedColor);
                             databaseHelper.insertActivityToActivityTable(ediTextValue, selectedColor);
                             Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                            startActivity(intent);
                         }
                     }
                 }
