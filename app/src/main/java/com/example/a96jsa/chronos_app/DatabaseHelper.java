@@ -462,5 +462,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String id = new String();
+        //Get results from query and save them in a cursor
+        Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where activityName = ? AND startTime = ?", new String[]{name, oldStartTime});
+        while (res.moveToNext()){
+             id = res.getString(0);
+        }
+
+        //Calculating new time
+        //Will be done here
+
+        //Update time
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("startTime", changedStartTime);
+        contentValues.put("endTime", changedEndTime);
+        contentValues.put("totalTime", storedElapsedTime);
+        sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
+    }
+
 }
 

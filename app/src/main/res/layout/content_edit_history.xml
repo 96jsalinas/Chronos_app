@@ -45,11 +45,6 @@
                     android:layout_weight="1"
                     android:text="Activity:" />
 
-                <Spinner
-                    android:id="@+id/spinActiv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -78,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,7 +102,28 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:inputType="text"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="44dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+            <Button
+                android:id="@+id/submitChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit change"/>
+
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
 
