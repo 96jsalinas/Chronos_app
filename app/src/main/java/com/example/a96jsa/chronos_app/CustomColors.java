@@ -26,6 +26,8 @@ public class CustomColors {
                 return Color.parseColor("#9A2617");
             case "Light red":
                 return Color.parseColor("#CD594A");
+            case "Background color":
+                return Color.parseColor("#ffebd8");
         }
         return Color.parseColor("#0C374D");
 

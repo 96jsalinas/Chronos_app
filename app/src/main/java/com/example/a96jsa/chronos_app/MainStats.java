@@ -66,6 +66,7 @@ public class MainStats extends AppCompatActivity {
         legend.setTextSize(23);
         legend.setEnabled(false);
         pieChart.getDescription().setEnabled(false);
+        pieChart.setHoleColor(CustomColors.getColor("Background color"));
 
 
         PieDataSet set = new PieDataSet(entries,"");

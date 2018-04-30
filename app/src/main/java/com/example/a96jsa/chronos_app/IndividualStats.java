@@ -86,6 +86,7 @@ public class IndividualStats extends AppCompatActivity {
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
+        pieChart.setHoleColor(CustomColors.getColor("Background color"));
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
