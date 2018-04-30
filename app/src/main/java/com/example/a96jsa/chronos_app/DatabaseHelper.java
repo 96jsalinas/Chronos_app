@@ -102,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Sleeping', 'YELLOW','0')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Running', 'RED', '10:49:45', '10:49:51', '5571', '18-Apr-2018', 'Sport')");
+                "Values('Running', 'RED', '10:49:45', '10:49:57', '1242', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Walking', 'BLUE', '10:49:51', '10:49:57', '5571', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
