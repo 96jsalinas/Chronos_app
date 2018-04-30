@@ -74,14 +74,14 @@ public class IndividualStats extends AppCompatActivity {
 
         PieDataSet set = new PieDataSet(entries,"");
         set.setColors(new int[]{CustomColors.getColor("Dark blue"),
-                CustomColors.getColor("Light blue"),
+                CustomColors.getColor("Dark red"),
                 CustomColors.getColor("Dark green"),
-                CustomColors.getColor("Light green"),
+                CustomColors.getColor("Dark orange"),
                 CustomColors.getColor("Dark yellow"),
                 CustomColors.getColor("Light yellow"),
-                CustomColors.getColor("Dark orange"),
+                CustomColors.getColor("Light green"),
                 CustomColors.getColor("Light orange"),
-                CustomColors.getColor("Dark red"),
+                CustomColors.getColor("Light blue"),
                 CustomColors.getColor("Light red")});
         PieData data = new PieData(set);
         pieChart.setData(data);
