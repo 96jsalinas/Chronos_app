@@ -42,6 +42,7 @@ public class MainScreen extends AppCompatActivity {
      Chronometer simpleChronometer;
 
      TextView chronometer_tv;
+    TimerService timerService;
 
 
 
@@ -56,8 +57,12 @@ public class MainScreen extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         listView = findViewById(R.id.listView);
-
-        final TimerService timerService = new TimerService();
+//        if(savedInstanceState != null){
+//            timerService = savedInstanceState.getParcelable("timeService");
+//        }else {
+//            timerService = new TimerService();
+//        }
+        timerService = new TimerService();
         chronometer_tv = (TextView)findViewById(R.id.chronometer_tv);
 
 
@@ -131,12 +136,17 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime());
-                simpleChronometer.start();
+
                 //check if chronometer has recorded time
                 if(timerService.isCounting()){
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+                    simpleChronometer.start();
                     timerService.resumeService();
+
                     Toast.makeText(getApplicationContext(),"chronometer resumed",Toast.LENGTH_SHORT).show();
                 }else {
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                    simpleChronometer.start();
                     timerService.onCreate();
                 }
 
@@ -238,15 +248,26 @@ public class MainScreen extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putLong("elapsedTime",SystemClock.elapsedRealtime());
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("timeService",timerService);
+        Toast.makeText(getApplicationContext(),"session saved",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        timerService = savedInstanceState.getParcelable("timeService");
+        simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+        if(timerService.isPlaying()){
+            simpleChronometer.start();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
 
 
 
@@ -255,15 +276,8 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                //simpleChronometer.
-//            }
-//        }).start();
-        Toast.makeText(getApplicationContext(),"on stop called",Toast.LENGTH_SHORT).show();
+
+//        Toast.makeText(getApplicationContext(),"on stop called",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -271,7 +285,7 @@ public class MainScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        simpleChronometer.setBase(213);
-        Toast.makeText(getApplicationContext(),"on reume called",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"on reume called",Toast.LENGTH_SHORT).show();
 
 
 
@@ -280,7 +294,7 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        Toast.makeText(getApplicationContext(),"on restart called",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"on restart called",Toast.LENGTH_SHORT).show();
     }
 
     @Override
