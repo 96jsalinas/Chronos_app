@@ -493,9 +493,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //Cursor starts counting at 0, since the name of the activity_activity_type is saved at the
             // second position of the table it has to be 1
             historyResultList.add(res.getString(1));
-            for (int i = 3; i<=6; i++){
-                buffer.append(res.getString(i)+" ");
-            }
+            buffer.append("Start time: "+res.getString(3)+" "+" ");
+            buffer.append("End time: "+res.getString(4)+" "+" ");
+            buffer.append("Date: "+res.getString(6)+" "+" ");
             arrayList.add(String.valueOf(buffer));
             buffer.delete(0, buffer.length());
         }

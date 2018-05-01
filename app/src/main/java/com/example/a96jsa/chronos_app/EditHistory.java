@@ -94,7 +94,7 @@ public class EditHistory extends AppCompatActivity {
         final String[] endTimeForStorage = {extra2.substring(9, 17)};
 
 
-        textView.setText(extra + " " + extra2);
+        textView.setText(extra + " " + " " + extra2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
