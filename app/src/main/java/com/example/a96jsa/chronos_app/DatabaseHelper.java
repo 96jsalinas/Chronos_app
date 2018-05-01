@@ -77,10 +77,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("create table "+ LEISURE_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Sport', 'RED', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Work', 'BLUE', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Housework', 'BLACK', '0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Leisure', 'YELLOW', '0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Sport', 'RED', '17955')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Work', 'BLUE', '22284')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Housework', 'BLACK', '16713')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Leisure', 'YELLOW', '22284')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Running', 'RED','0')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Walking', 'BLUE','0')");
@@ -109,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Values('Swimming', 'BLACK', '10:49:57', '10:50:03', '5571', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Gym', 'YELLOW', '10:50:03', '10:50:09', '5571', '18-Apr-2018', 'Sport')");
+
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Studying', 'RED', '10:50:09', '10:50:15', '5571', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
@@ -117,12 +118,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Values('Exercises', 'BLACK', '10:50:21', '10:50:27', '5571', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Lecture recap', 'YELLOW', '10:50:27', '10:50:33', '5571', '18-Apr-2018', 'Work')");
+
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Cleaning', 'RED', '10:50:33', '10:50:39', '5571', '18-Apr-2018', 'Housework')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Cooking', 'BLUE', '10:50:39', '10:50:45', '5571', '18-Apr-2018', 'Housework')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('Laundry', 'BLACK', '10:50:45', '10:50:51', '5571', '18-Apr-2018', 'Housework')");
+
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
                 "Values('TV', 'RED', '10:50:51', '10:50:57', '5571', '18-Apr-2018', 'Leisure')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
@@ -169,7 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public int getCategoryTotalTime(String category){
+    public Integer getCategoryTotalTime(String category){
         SQLiteDatabase db = this.getWritableDatabase();
 //        String[] columns = {"categoryName,totalTime"};
 //        String selection = "categoryName = ?";
@@ -178,12 +181,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + CATEGORY_TABLE + " where Type = ? ",new String[]{category});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
-        int totalCategoryTime = 0;
+        Integer totalCategoryTime = 0;
 
         while(cursor.moveToNext()){
 
-            int cursorTime = Integer.parseInt(cursor.getString(0));
-            totalCategoryTime += cursorTime;
+            Integer cursorTime = Integer.parseInt(cursor.getString(0));
+            totalCategoryTime = totalCategoryTime + cursorTime;
 
         }
 
@@ -265,15 +268,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-        String storedTotalTime = updatedTotalTime.toString();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("TotalTime", updatedTotalTime.toString());
         sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{activityName});
-        addTimeToActivityTable(category, time);
+        addTimeToCategoryTable(category, time);
 
     }
 
-    public Integer addTimeToActivityTable (String category, String timeToAdd){
+    public Integer addTimeToCategoryTable(String category, String timeToAdd){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String totalTime = new String();
         Integer additionalTime;
@@ -281,7 +284,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CATEGORY_TABLE + " where Type = ?", new String[]{category});
 
         additionalTime = Integer.parseInt(timeToAdd);
-        while (cursor.moveToNext()){
+        while (cursor.moveToFirst()){
             totalTime = cursor.getString(3);
         }
         updatedTotalTime = additionalTime+ Integer.parseInt(totalTime);
