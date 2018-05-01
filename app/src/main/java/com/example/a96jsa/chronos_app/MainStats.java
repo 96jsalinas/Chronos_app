@@ -17,9 +17,12 @@ import android.view.MenuItem;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.AbstractQueue;
 import java.util.ArrayList;
@@ -88,6 +91,19 @@ public class MainStats extends AppCompatActivity {
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
+
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Intent intent = new Intent(getBaseContext(), MainScreen.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
