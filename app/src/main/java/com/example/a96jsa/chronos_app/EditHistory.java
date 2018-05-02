@@ -27,6 +27,7 @@ public class EditHistory extends AppCompatActivity {
     private EditText editTextStart;
     private EditText editTextEnd;
     private DatabaseHelper databaseHelper;
+    private EditText editTextName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class EditHistory extends AppCompatActivity {
         button = findViewById(R.id.submitChange);
         editTextStart = findViewById(R.id.inputText);
         editTextEnd = findViewById(R.id.editText3);
+        editTextName = findViewById(R.id.inputTextName);
         databaseHelper = new DatabaseHelper(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -92,6 +94,7 @@ public class EditHistory extends AppCompatActivity {
         final String startTimeForQuerying = extra2.substring(12, 20);
         final String[] startTimeForStorage = {extra2.substring(12, 20)};
         final String[] endTimeForStorage = {extra2.substring(33, 41)};
+        final String[] nameForStorage = {extra};
 
 
         textView.setText(extra + " " + " " + extra2);
@@ -100,9 +103,13 @@ public class EditHistory extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 
-
+            String changedName = editTextName.getText().toString();
             String changedStartTime = editTextStart.getText().toString();
             String changedEndTime = editTextEnd.getText().toString();
+
+            if (changedName != null && !changedName.isEmpty()){
+                    nameForStorage[0] = changedName;
+                }
 
             if (changedStartTime != null && !changedStartTime.isEmpty()){
                 startTimeForStorage[0] = changedStartTime;
@@ -112,16 +119,17 @@ public class EditHistory extends AppCompatActivity {
                     endTimeForStorage[0] = changedEndTime;
             }
 
-                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0]);
+                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0], nameForStorage[0]);
                 Intent intent = new Intent(getBaseContext(), History.class);
                 startActivity(intent);
             }
         });
     }
 
-    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime) {
+    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime, String changedName) {
         String dtStart = changedStartTime;
         String dtEnd =   changedEndTime;
+        String dtName = changedName;
         String storedStartTime = new String();
         String storedEndTime = new String();
         String storedElapsedTime = new String();
@@ -134,7 +142,7 @@ public class EditHistory extends AppCompatActivity {
             storedElapsedTime = mills.toString();
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
-            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime);
+            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName);
 
 
         } catch (ParseException e) {

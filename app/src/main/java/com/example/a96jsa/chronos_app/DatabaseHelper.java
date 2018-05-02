@@ -452,7 +452,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("Type", newName);
         contentValues.put ("Color", newColor);
         sqLiteDatabase.update(tableName, contentValues, "ID = ?", new String[]{oldID});
-
+        String selectQuery = "UPDATE "+ ACTIVITY_TABLE +" SET activityName  = replace(activityName "+" ,  '"+ oldName + "', '"+newName+"') WHERE activityName LIKE '%"+oldName+"%'";
+        sqLiteDatabase.execSQL(selectQuery);
         if (flag) {
             sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{newID});
             deleteData(tableName, newName);
@@ -516,7 +517,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime){
+    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
         String category = new String();
@@ -544,6 +545,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("startTime", changedStartTime);
         contentValues.put("endTime", changedEndTime);
         contentValues.put("totalTime", storedElapsedTime);
+        contentValues.put("activityName", storedName);
         sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Update time in general category table and type of activity table
