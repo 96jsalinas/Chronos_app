@@ -60,21 +60,7 @@ public class MainStats extends AppCompatActivity {
 
             Float totalTime = (float) db.getCategoryTotalTime(category);
             String categoryColor = db.getCategoryColor(category);
-            switch (categoryColor){
-                case "BLUE":
-                    arrayListColors.add(Color.BLUE);
-                    break;
-                case "BLACK":
-                    arrayListColors.add(Color.BLACK);
-                    break;
-                case "YELLOW":
-                    arrayListColors.add(Color.YELLOW);
-                    break;
-                default:
-                    arrayListColors.add(Color.RED);
-                    break;
-            }
-
+            arrayListColors.add(CustomColors.getColor(categoryColor));
             entries.add(new PieEntry(totalTime,category));
         }
 
@@ -83,6 +69,7 @@ public class MainStats extends AppCompatActivity {
         legend.setTextSize(23);
         legend.setEnabled(false);
         pieChart.getDescription().setEnabled(false);
+        pieChart.setHoleColor(CustomColors.getColor("Background color"));
 
 
         PieDataSet set = new PieDataSet(entries,"");

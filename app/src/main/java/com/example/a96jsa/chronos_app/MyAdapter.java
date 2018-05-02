@@ -60,7 +60,6 @@ public class MyAdapter extends ArrayAdapter<Model> {
         View rowView = null;
         if(!modelsArrayList.get(position).isGroupHeader()){
             rowView = inflater.inflate(R.layout.target_item, parent, false);
-           // rowView.setBackgroundColor(Color.RED);
 
             // 3. Get title
             TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
@@ -76,25 +75,8 @@ public class MyAdapter extends ArrayAdapter<Model> {
                   categoryColor=databaseHelper.getCategoryColor(parentCategory);
               }
           }
-//          if(categoryColor.contains("BLUE")){
-//              rowView.setBackgroundColor(Color.BLUE);
-//          }else{
-//              rowView.setBackgroundColor(Color.RED);
-//          }
-            switch (categoryColor){
-                case "BLUE":
-                    rowView.setBackgroundColor(Color.BLUE);
-                    break;
-                case "BLACK":
-                    rowView.setBackgroundColor(Color.BLACK);
-                    break;
-                case "YELLOW":
-                    rowView.setBackgroundColor(Color.YELLOW);
-                    break;
-                default:
-                    rowView.setBackgroundColor(Color.RED);
-                    break;
-            }
+
+            rowView.setBackgroundColor(CustomColors.getColor(categoryColor));
 
             titleView.setOnClickListener(new View.OnClickListener() {
                 @Override

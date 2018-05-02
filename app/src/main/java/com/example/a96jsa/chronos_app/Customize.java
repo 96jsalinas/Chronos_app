@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class Customize extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     String selectedCategory;
-    String selectedColor = "RED";
+    String selectedColor = "Dark blue";
     EditText editText;
     Button submitButton;
     Boolean categoryChecked = true;
@@ -65,18 +65,21 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         //spinner
 
         ArrayList<String> colorListString = new ArrayList<>();
-        colorListString.add("RED");
-        colorListString.add("BLUE");
-        colorListString.add("GREEN");
-        colorListString.add("YELLOW");
-        colorListString.add("MAGENTA");
+        colorListString.add("Dark blue");
+        colorListString.add("Light blue");
+        colorListString.add("Dark green");
+        colorListString.add("Light green");
+        colorListString.add("Dark yellow");
+        colorListString.add("Light yellow");
+        colorListString.add("Dark orange");
+        colorListString.add("Light orange");
+        colorListString.add("Dark red");
+        colorListString.add("Light red");
         final Spinner colorSpinner = (Spinner)findViewById(R.id.colorSpinner);
         final ArrayAdapter<String> colorSpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,colorListString);
         colorSpinner.setAdapter(colorSpinnerArrayAdapter);
         colorSpinner.setOnItemSelectedListener(this);
         colorSpinner.setVisibility(View.VISIBLE);
-
-
 
         if(isAnActivity!=null){
             isActivity=true;
@@ -174,12 +177,17 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 if(categoryChecked){
                     if(preexisting){
                         databaseHelper.editCategory(categoryName,ediTextValue,selectedColor);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        Toast.makeText(getApplicationContext(), "data edited", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
                     }else {
                         databaseHelper.insertCategorytoCategoryTable(ediTextValue, selectedColor);
                         databaseHelper.createCategoryTable(ediTextValue);
                         categorySpinnerArrayAdapter.add(ediTextValue);
                         categorySpinnerArrayAdapter.notifyDataSetChanged();
                         Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
                     }
                 }
                 else {
@@ -191,6 +199,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                             flag=true;
                         }
                         databaseHelper.updateTypeData(categoryName,oldname,ediTextValue,selectedColor,selectedCategory,flag);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
                     }else {
                         boolean checkActivity = databaseHelper.checkActivity(selectedCategory, ediTextValue);
                         if (checkActivity) {
@@ -199,6 +209,8 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                             databaseHelper.insertCategoryTypes(selectedCategory, ediTextValue, selectedColor);
                             databaseHelper.insertActivityToActivityTable(ediTextValue, selectedColor);
                             Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                            startActivity(intent);
                         }
                     }
                 }
