@@ -60,7 +60,7 @@ public class IndividualStats extends AppCompatActivity {
                 Map.Entry mentry = (Map.Entry)iterator.next();
                // entries.add(new PieEntry(Integer.parseInt(mentry.getValue().toString()),mentry.getKey().toString()));
                 //entries.add(new PieEntry(databaseHelper.getActivityTotalTime(mentry.getKey().toString()),mentry.getKey().toString()));
-                entries.add(new PieEntry(databaseHelper.getActivityTotalTime(categoryName,mentry.getKey().toString())));
+                entries.add(new PieEntry(databaseHelper.getActivityTotalTime(categoryName,mentry.getKey().toString()),mentry.getKey().toString()));
             }
 
         }else {
