@@ -147,6 +147,11 @@ public class MyAdapter extends ArrayAdapter<Model> {
                         Model model = modelsArrayList.get(position);
                         intent.putExtra("categoryName", category);
                         parent.getContext().startActivity(intent);
+                    }else {
+                        Intent intent = new Intent(parent.getContext(),ActivityHistory.class);
+                        String activity = modelsArrayList.get(position).getTitle();
+                        intent.putExtra("activityName",activity);
+                        parent.getContext().startActivity(intent);
                     }
                 }
             });

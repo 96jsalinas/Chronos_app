@@ -138,8 +138,8 @@ public class EditHistory extends AppCompatActivity {
         try {
             Date dateStart = format.parse(dtStart);
             Date dateEnd = format.parse(dtEnd);
-            Long mills = dateEnd.getTime() - dateStart.getTime();
-            storedElapsedTime = mills.toString();
+            Long seconds = (dateEnd.getTime() - dateStart.getTime())/1000;
+            storedElapsedTime = seconds.toString();
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
             databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName);
