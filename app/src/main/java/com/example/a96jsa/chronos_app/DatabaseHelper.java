@@ -201,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        String[] selectionArgs = {category};
 //        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
 
-        Cursor cursor = db.rawQuery("SELECT totalTime FROM " +category + " WHERE activityName = ?",new String[]{activity});
+        Cursor cursor = db.rawQuery("SELECT TotalTime FROM " +category + " WHERE activityName = ?",new String[]{activity});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
         int totalActivityTime = 0;
 
