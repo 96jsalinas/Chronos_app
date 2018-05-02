@@ -89,12 +89,12 @@ public class EditHistory extends AppCompatActivity {
         final String extra = hashMap.get("name");
         //Contains activity data
         String extra2 = hashMap.get("date");
-        final String startTimeForQuerying = extra2.substring(0, 8);
-        final String[] startTimeForStorage = {extra2.substring(0, 8)};
-        final String[] endTimeForStorage = {extra2.substring(9, 17)};
+        final String startTimeForQuerying = extra2.substring(12, 20);
+        final String[] startTimeForStorage = {extra2.substring(12, 20)};
+        final String[] endTimeForStorage = {extra2.substring(33, 41)};
 
 
-        textView.setText(extra + " " + extra2);
+        textView.setText(extra + " " + " " + extra2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +113,8 @@ public class EditHistory extends AppCompatActivity {
             }
 
                 calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0]);
-
+                Intent intent = new Intent(getBaseContext(), History.class);
+                startActivity(intent);
             }
         });
     }
@@ -134,6 +135,7 @@ public class EditHistory extends AppCompatActivity {
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
             databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime);
+
 
         } catch (ParseException e) {
             e.printStackTrace();
