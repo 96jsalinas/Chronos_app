@@ -2,9 +2,11 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -39,11 +41,16 @@ public class MainScreen extends AppCompatActivity {
     private ListView listView;
     private String startTime;
     private String selectedCategory;
-     Chronometer simpleChronometer;
+    long timeStart;
+    long timeStop;
+    long timeElapsed;
+    long savedTime;
 
+     Chronometer simpleChronometer;
+    SharedPreferences sharedPreferences;
      TextView chronometer_tv;
     TimerService timerService;
-
+    public static final String SHAREDPREFERENCES = "SharePreferences" ;
 
 
 
@@ -62,7 +69,20 @@ public class MainScreen extends AppCompatActivity {
 //        }else {
 //            timerService = new TimerService();
 //        }
-        timerService = new TimerService();
+        //timerService = new TimerService("timeService");
+
+//        if(savedInstanceState != null){
+//            timeStart = savedInstanceState.getLong("startTime");
+//            savedTime = savedInstanceState.getLong("savedTime");
+//
+//        }
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        if(sharedPreferences != null){
+            timeStart = sharedPreferences.getLong("timeStart",0);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+        }
+
+
         chronometer_tv = (TextView)findViewById(R.id.chronometer_tv);
 
 
@@ -135,20 +155,33 @@ public class MainScreen extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                simpleChronometer.setBase(SystemClock.elapsedRealtime());
-
+                //simpleChronometer.setBase(SystemClock.elapsedRealtime());
+//                if(timeStart == 0){
+//                    timeStart = (int)System.currentTimeMillis();
+//                }else{
+//
+//                }
+                timeStart = System.currentTimeMillis();
                 //check if chronometer has recorded time
-                if(timerService.isCounting()){
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
-                    simpleChronometer.start();
-                    timerService.resumeService();
+//                if(timerService.isCounting()){
+//                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+//                    simpleChronometer.start();
+//                    timerService.resumeService();
+//
+//                    Toast.makeText(getApplicationContext(),"chronometer resumed",Toast.LENGTH_SHORT).show();
+//                }else {
+//                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
+//                    simpleChronometer.start();
+//                    timerService.onCreate();
+//                }
+                if(savedTime > 0) {
 
-                    Toast.makeText(getApplicationContext(),"chronometer resumed",Toast.LENGTH_SHORT).show();
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
                 }else {
                     simpleChronometer.setBase(SystemClock.elapsedRealtime());
-                    simpleChronometer.start();
-                    timerService.onCreate();
                 }
+                //simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                simpleChronometer.start();
 
 
                 playButton.setClickable(false);
@@ -165,16 +198,29 @@ public class MainScreen extends AppCompatActivity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timerService.stopService();
-                simpleChronometer.stop();
-                //check if chronometer has been initialized
-                if(timerService != null){
-                    //simpleChronometer.setBase( timerService.getElapsedTimeSeconds());
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
-                    chronometer_tv.setText(Integer.toString(timerService.getElapsedTimeSeconds()));
+//                timerService.stopService();
+//                simpleChronometer.stop();
+//                //check if chronometer has been initialized
+//                if(timerService != null){
+//                    //simpleChronometer.setBase( timerService.getElapsedTimeSeconds());
+//                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+//                    chronometer_tv.setText(Integer.toString(timerService.getElapsedTimeSeconds()));
+//                }
+                timeStop = System.currentTimeMillis();
+                timeElapsed = timeStop - timeStart;
+
+                if(savedTime > 0) {
+                    savedTime = timeElapsed + savedTime;
+                }else {
+                    savedTime = timeElapsed;
                 }
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+                simpleChronometer.stop();
+
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
+
+
                 String totalTime = Long.toString(elapsedMillis);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
@@ -251,22 +297,34 @@ public class MainScreen extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("timeService",timerService);
+        outState.putLong("timeStart",timeStart);
+        outState.putLong("savedTime",savedTime);
         Toast.makeText(getApplicationContext(),"session saved",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        timerService = savedInstanceState.getParcelable("timeService");
-        simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
-        if(timerService.isPlaying()){
-            simpleChronometer.start();
-        }
+//        timerService = savedInstanceState.getParcelable("timeService");
+//        simpleChronometer.setBase(SystemClock.elapsedRealtime() - timerService.getElapsedTimeSeconds() * 1000);
+//        if(timerService.isPlaying()){
+//            simpleChronometer.start();
+//        }
+        timeStart = savedInstanceState.getLong("timeStart");
+        savedTime = savedInstanceState.getLong("savedTime");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Context context = getApplicationContext();
+         sharedPreferences =  context.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("timeStart",timeStart);
+        editor.putLong("savedTime",savedTime);
+        editor.commit();
+
+
 //        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
 
 
