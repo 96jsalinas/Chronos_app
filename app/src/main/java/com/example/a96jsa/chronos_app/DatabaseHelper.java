@@ -184,8 +184,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Integer totalCategoryTime = 0;
 
         while(cursor.moveToNext()){
-
-            Integer cursorTime = Integer.parseInt(cursor.getString(0));
+            String cTime = cursor.getString(0);
+            if(cTime==null){
+                cTime="0";
+            }
+            Integer cursorTime = Integer.parseInt(cTime);
             totalCategoryTime = totalCategoryTime + cursorTime;
 
         }
