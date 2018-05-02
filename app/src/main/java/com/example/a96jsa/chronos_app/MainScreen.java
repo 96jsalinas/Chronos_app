@@ -135,7 +135,7 @@ public class MainScreen extends AppCompatActivity {
                 //Stuff to enter into activity table, will be extracted into separate java class soon
                 String totalTime = Long.toString(elapsedMillis);
                 Date c = Calendar.getInstance().getTime();
-                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
                 playButton.setClickable(true);
                 pauseButton.setClickable(false);

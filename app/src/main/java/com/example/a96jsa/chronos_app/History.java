@@ -87,7 +87,7 @@ public class History extends AppCompatActivity {
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_YEAR, -20);
         Date daysBeforeDate = cal.getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(daysBeforeDate);
 
         final List<Map<String, String>> data = databaseHelper.showHistory(formattedDate);
