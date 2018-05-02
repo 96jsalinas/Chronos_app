@@ -152,7 +152,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //    public ArrayList<String> getActivities(String category){
 //        return this.showPossibleActivities(category);
 //    }
-    public HashMap<String,String>getActivities(String category){
+    public HashMap<String,String>getActivities(String categoryName){
+        String category = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 //        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM sqlite_master WHERE type='table' AND name!='android_metadata' AND name!='sqlite_sequence' AND name!='Category'AND name!='Activity' ", null);
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT Type,TotalTime FROM " +category,null);
@@ -170,7 +171,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public Integer getCategoryTotalTime(String category){
+    public Integer getCategoryTotalTime(String categoryName){
+        String category = categoryName.replace(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
 //        String[] columns = {"categoryName,totalTime"};
 //        String selection = "categoryName = ?";
@@ -192,7 +194,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // needs to be changed to category table and activity name
-    public int getActivityTotalTime(String category, String activity){
+    public int getActivityTotalTime(String categoryName, String activity){
+        String category = categoryName.replace(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
 //        String[] columns = {"categoryName,totalTime"};
 //        String selection = "categoryName = ?";
@@ -215,7 +218,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-   public String getCategoryColor(String category){
+   public String getCategoryColor(String categoryName){
+       String category = categoryName.replace(" ","_");
        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String [] projection = {"Type", "Color"};
         String selection = "Type = ?";
@@ -242,17 +246,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Activity_COL5, endTime);
         contentValues.put(Activity_COL6, date);
         contentValues.put(Activity_COL7, color);
-        contentValues.put(Activity_COL8,categoryName);
+        contentValues.put(Activity_COL8,categoryName.replace(" ","_"));
 
         //insert returns -1 if it failed, so it is possible to check this way if it did work
         long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
 
-        addToTotalTime(activityName, totalTime, categoryName);
+        addToTotalTime(activityName, totalTime, categoryName.replace(" ","_"));
 
 
 
     }
-    public void addToTotalTime(String activityName, String time, String category) {
+    public void addToTotalTime(String activityName, String time, String categoryName) {
+        String category = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String currentTotalTime = new String();
         Integer additionalTime;
@@ -275,7 +280,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Integer addTimeToCategoryTable(String category, String timeToAdd){
+    public Integer addTimeToCategoryTable(String categoryName, String timeToAdd){
+        String category = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String totalTime = new String();
         Integer additionalTime;
@@ -302,6 +308,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Insert category specific types, this methods needs also be called when a new category is created
     public boolean insertCategoryTypes (String tableName, String typeName, String color){
+        tableName = tableName.replace(" ","_");
         SQLiteDatabase sqLiteOpenHelper = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Type", typeName);
@@ -316,6 +323,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //Check if category exists already exists
     public boolean checkCategory (String categoryName){
+        categoryName = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM sqlite_master", null);
         ArrayList<String> categories = new ArrayList<String>();
@@ -337,6 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //Check if activity_activity_type for the specific category exists
     public boolean checkActivity (String tableName, String activityName){
+        tableName = tableName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor res = sqLiteDatabase.rawQuery("select * from " + tableName, null);
         ArrayList<String> activities = new ArrayList<String>();
@@ -355,6 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Generate table for new category
     public boolean createCategoryTable(String categoryName){
+        categoryName = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL("create table "+ categoryName + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
         sqLiteDatabase.close();
@@ -362,6 +372,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //function for inserting the category name and color in the category table
     public void insertCategorytoCategoryTable(String categoryName, String color){
+        categoryName = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues value = new ContentValues();
         value.put("Type",categoryName);
@@ -393,12 +404,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (res.moveToNext()){
             //Cursor starts counting at 0, since the name of the activity_activity_type is saved at the
             // second position of the table it has to be 1
-            possibleActivityResultList.add(res.getString(1));
+            possibleActivityResultList.add(res.getString(1).replace("_"," "));
         }
         return possibleActivityResultList;
     }
     //Show possible activities or categories
    public ArrayList<String> showPossibleActivities (String tableName){
+        tableName=tableName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         //Get results from query and save them in a cursor
@@ -409,13 +421,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (res.moveToNext()){
             //Cursor starts counting at 0, since the name of the activity_activity_type is saved at the
             // second position of the table it has to be 1
-            possibleActivityResultList.add(res.getString(1));
+            possibleActivityResultList.add(res.getString(1).replace("_"," "));
         }
         return possibleActivityResultList;
     }
 
     //Update types for specific category
     public void editCategory (String oldName, String newName, String newColor){
+        oldName = oldName.replace(" ","_");
+        newName = newName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
         //Get id from activity_activity_type type so it can be updated
@@ -440,6 +454,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Update types for specific category
 
     public void updateTypeData (String tableName, String oldName, String newName, String newColor, String newCategory, boolean flag){
+        tableName = tableName.replace(" ","_");
+        oldName = oldName.replace(" ","_");
+        newName = newName.replace(" ","_");
+        newCategory = newCategory.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String oldID = new String();
         String newID = new String();
@@ -464,15 +482,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Delete types of activities / Category
-    public boolean deleteData (String tableName, String Name){
+    public boolean deleteData (String tableName, String name){
+        tableName = tableName.replace(" ","_");
+        name = name.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(tableName, "type = ?", new String[] {Name});
+        sqLiteDatabase.delete(tableName, "type = ?", new String[] {name});
 
         return true;
     }
 
     //Delete category table
     public boolean deleteCategory(String tableName){
+        tableName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + tableName);
         sqLiteDatabase.delete(CATEGORY_TABLE, "Type = ?",new String[]{tableName});
@@ -498,7 +519,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             buffer.append("Start time: "+res.getString(3)+" "+" ");
             buffer.append("End time: "+res.getString(4)+" "+" ");
             buffer.append("Date: "+res.getString(6)+" "+" ");
-            buffer.append("Category: "+res.getString(7)+" "+" ");
+            buffer.append("Category: "+res.getString(7).replace("_"," ")+" "+" ");
             arrayList.add(String.valueOf(buffer));
             buffer.delete(0, buffer.length());
         }
@@ -557,6 +578,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public void changeTotalTimeAfterHistoryUpdate(String category, String activityName, String oldTime, String newTime){
+        category = category.replace(" ","_");
             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
             String currentActivityTotalTime = new String();
             String currentCategoryTotalTime = new String();
