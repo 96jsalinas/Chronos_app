@@ -286,6 +286,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()){
             totalTime = cursor.getString(3);
         }
+        if(totalTime==null){
+            totalTime="0";
+        }
         updatedTotalTime = additionalTime+ Integer.parseInt(totalTime);
 
 
