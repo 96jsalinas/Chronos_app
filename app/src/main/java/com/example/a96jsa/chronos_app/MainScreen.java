@@ -45,10 +45,11 @@ public class MainScreen extends AppCompatActivity {
     long timeStop;
     long timeElapsed;
     long savedTime;
+    boolean isRecording;
 
      Chronometer simpleChronometer;
     SharedPreferences sharedPreferences;
-     TextView chronometer_tv;
+
     TimerService timerService;
     public static final String SHAREDPREFERENCES = "SharePreferences" ;
 
@@ -80,10 +81,11 @@ public class MainScreen extends AppCompatActivity {
         if(sharedPreferences != null){
             timeStart = sharedPreferences.getLong("timeStart",0);
             savedTime = sharedPreferences.getLong("savedTime",0);
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
         }
 
 
-        chronometer_tv = (TextView)findViewById(R.id.chronometer_tv);
+
 
 
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
@@ -174,14 +176,16 @@ public class MainScreen extends AppCompatActivity {
 //                    simpleChronometer.start();
 //                    timerService.onCreate();
 //                }
-                if(savedTime > 0) {
-
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
-                }else {
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
-                }
+//                if(savedTime > 0) {
+//
+//                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+//                }else {
+//                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
+//                }
                 //simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
                 simpleChronometer.start();
+                isRecording = true;
 
 
                 playButton.setClickable(false);
@@ -216,6 +220,7 @@ public class MainScreen extends AppCompatActivity {
                 }
                 simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
                 simpleChronometer.stop();
+                isRecording = false;
 
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
@@ -322,10 +327,11 @@ public class MainScreen extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("timeStart",timeStart);
         editor.putLong("savedTime",savedTime);
+        editor.putBoolean("isRecording", isRecording);
         editor.commit();
 
 
-//        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
 
 
 
@@ -343,7 +349,23 @@ public class MainScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        simpleChronometer.setBase(213);
-//        Toast.makeText(getApplicationContext(),"on reume called",Toast.LENGTH_SHORT).show();
+       Toast.makeText(getApplicationContext(),"on resume called",Toast.LENGTH_SHORT).show();
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        if(sharedPreferences != null){
+            timeStart = sharedPreferences.getLong("timeStart",0);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+        }
+        if(savedTime > 0){
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+
+        }
+        if(isRecording){
+            simpleChronometer.start();
+        }else {
+            simpleChronometer.stop();
+        }
+
 
 
 
