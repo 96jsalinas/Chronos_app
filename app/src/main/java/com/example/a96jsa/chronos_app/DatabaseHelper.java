@@ -78,60 +78,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create table "+ LEISURE_TABLE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Type TEXT, Color TEXT, TotalTime TEXT)");
 
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Sport', 'Dark blue', '17955')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Work', 'Dark green', '22284')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Housework', 'Dark yellow', '16713')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Leisure', 'Dark red', '22284')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Sport', 'Dark blue', '30')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Work', 'Dark green', '24')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Housework', 'Dark yellow', '24')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Category (Type, Color, TotalTime) VALUES('Leisure', 'Dark red', '24')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Running', 'Dark blue','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Walking', 'Dark green','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Swimming', 'Dark yellow','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Gym', 'Dark red','0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Running', 'Dark blue','12')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Walking', 'Dark green','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Swimming', 'Dark yellow','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Sport (Type, Color, TotalTime) VALUES('Gym', 'Dark red','6')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Studying', 'Dark blue','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Writing', 'Dark green','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Exercices', 'Dark yellow','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Lecture recap', 'Dark red','0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Studying', 'Dark blue','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Writing', 'Dark green','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Exercices', 'Dark yellow','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Lecture recap', 'Dark red','6')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cleaning', 'Dark blue','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cooking', 'Dark green','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Laundry', 'Dark yellow','0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cleaning', 'Dark blue','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cooking', 'Dark green','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Laundry', 'Dark yellow','6')");
 
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('TV', 'Dark blue','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Reading', 'Dark green','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Gaming', 'Dark yellow','0')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Sleeping', 'Dark red','0')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('TV', 'Dark blue','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Reading', 'Dark green','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Gaming', 'Dark yellow','6')");
+        sqLiteDatabase.execSQL("INSERT or replace INTO Leisure (Type, Color, TotalTime) VALUES('Sleeping', 'Dark red','6')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Running', 'Dark blue', '10:49:45', '10:49:57', '1242', '18-Apr-2018', 'Sport')");
+                "Values('Running', 'Dark blue', '10:49:45', '10:49:57', '12', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Walking', 'Dark green', '10:49:51', '10:49:57', '5571', '18-Apr-2018', 'Sport')");
+                "Values('Walking', 'Dark green', '10:49:51', '10:49:57', '6', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Swimming', 'Dark yellow', '10:49:57', '10:50:03', '5571', '18-Apr-2018', 'Sport')");
+                "Values('Swimming', 'Dark yellow', '10:49:57', '10:50:03', '6', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Gym', 'Dark red', '10:50:03', '10:50:09', '5571', '18-Apr-2018', 'Sport')");
+                "Values('Gym', 'Dark red', '10:50:03', '10:50:09', '6', '18-Apr-2018', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Studying', 'Dark blue', '10:50:09', '10:50:15', '5571', '18-Apr-2018', 'Work')");
+                "Values('Studying', 'Dark blue', '10:50:09', '10:50:15', '6', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Writing', 'Dark green', '10:50:15', '10:50:21', '5571', '18-Apr-2018', 'Work')");
+                "Values('Writing', 'Dark green', '10:50:15', '10:50:21', '6', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Exercises', 'Dark yellow', '10:50:21', '10:50:27', '5571', '18-Apr-2018', 'Work')");
+                "Values('Exercises', 'Dark yellow', '10:50:21', '10:50:27', '6', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Lecture recap', 'Dark red', '10:50:27', '10:50:33', '5571', '18-Apr-2018', 'Work')");
+                "Values('Lecture recap', 'Dark red', '10:50:27', '10:50:33', '6', '18-Apr-2018', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Cleaning', 'Dark blue', '10:50:33', '10:50:39', '5571', '18-Apr-2018', 'Housework')");
+                "Values('Cleaning', 'Dark blue', '10:50:33', '10:50:39', '6', '18-Apr-2018', 'Housework')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Cooking', 'Dark green', '10:50:39', '10:50:45', '5571', '18-Apr-2018', 'Housework')");
+                "Values('Cooking', 'Dark green', '10:50:39', '10:50:45', '6', '18-Apr-2018', 'Housework')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Laundry', 'Dark yellow', '10:50:45', '10:50:51', '5571', '18-Apr-2018', 'Housework')");
+                "Values('Laundry', 'Dark yellow', '10:50:45', '10:50:51', '6', '18-Apr-2018', 'Housework')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('TV', 'Dark blue', '10:50:51', '10:50:57', '5571', '18-Apr-2018', 'Leisure')");
+                "Values('TV', 'Dark blue', '10:50:51', '10:50:57', '6', '18-Apr-2018', 'Leisure')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Reading', 'Dark green', '10:50:57', '10:51:03', '5571', '18-Apr-2018', 'Leisure')");
+                "Values('Reading', 'Dark green', '10:50:57', '10:51:03', '6', '18-Apr-2018', 'Leisure')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Gaming', 'Dark yellow', '10:51:03', '10:51:09', '5571', '18-Apr-2018', 'Leisure')");
+                "Values('Gaming', 'Dark yellow', '10:51:03', '10:51:09', '6', '18-Apr-2018', 'Leisure')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, categoryName) " +
-                "Values('Sleeping', 'Dark red', '10:51:09', '10:51:15', '5571', '18-Apr-2018', 'Leisure')");
+                "Values('Sleeping', 'Dark red', '10:51:09', '10:51:15', '6', '18-Apr-2018', 'Leisure')");
 
     }
 
@@ -205,7 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         while(cursor.moveToNext()){
 
-            int cursorTime = Integer.parseInt(cursor.getString(0));
+            Integer cursorTime = Integer.parseInt(cursor.getString(0));
             totalActivityTime += cursorTime;
 
         }
