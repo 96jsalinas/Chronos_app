@@ -1,45 +1,41 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-import java.text.ParseException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class EditHistory extends AppCompatActivity {
+public class ActivityHistory extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    private Button button;
-    private EditText editTextStart;
-    private EditText editTextEnd;
+    private ListView historyView;
     private DatabaseHelper databaseHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_history);
-
+        setContentView(R.layout.activity_history2);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        TextView textView = findViewById(R.id.textActivity);
-        button = findViewById(R.id.submitChange);
-        editTextStart = findViewById(R.id.inputText);
-        editTextEnd = findViewById(R.id.editText3);
+        historyView = findViewById(R.id.historyList);
         databaseHelper = new DatabaseHelper(this);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -71,6 +67,7 @@ public class EditHistory extends AppCompatActivity {
                                 Intent statsIntent = new Intent(getBaseContext(),MainStats.class);
                                 startActivity(statsIntent);
                                 break;
+
                         }
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
@@ -82,64 +79,32 @@ public class EditHistory extends AppCompatActivity {
                     }
                 });
 
-        Intent intent = getIntent();
-
-        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("Values");
-        //Contains activity name
-        final String extra = hashMap.get("name");
-        //Contains activity data
-        String extra2 = hashMap.get("date");
-        final String startTimeForQuerying = extra2.substring(12, 20);
-        final String[] startTimeForStorage = {extra2.substring(12, 20)};
-        final String[] endTimeForStorage = {extra2.substring(33, 41)};
+        String activity=getIntent().getStringExtra("activityName");
+        final List<Map<String, String>> data = databaseHelper.showActivityHistory(activity);
 
 
-        textView.setText(extra + " " + " " + extra2);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        SimpleAdapter adapter = new SimpleAdapter(this, data,
+                android.R.layout.simple_list_item_2,
+                new String[] {"name", "date"},
+                new int[] {android.R.id.text1,
+                        android.R.id.text2});
+        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
+
+
+        historyView.setAdapter(adapter);
+
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                
-
-            String changedStartTime = editTextStart.getText().toString();
-            String changedEndTime = editTextEnd.getText().toString();
-
-            if (changedStartTime != null && !changedStartTime.isEmpty()){
-                startTimeForStorage[0] = changedStartTime;
-            }
-
-            if (changedEndTime != null && !changedEndTime.isEmpty()){
-                    endTimeForStorage[0] = changedEndTime;
-            }
-
-                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0]);
-                Intent intent = new Intent(getBaseContext(), History.class);
+            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+            {
+                Object name = historyView.getItemAtPosition(position);
+                Intent intent = new Intent (getApplicationContext(), EditHistory.class);
+                intent.putExtra("Values", (Serializable) name);
                 startActivity(intent);
             }
         });
-    }
-
-    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime) {
-        String dtStart = changedStartTime;
-        String dtEnd =   changedEndTime;
-        String storedStartTime = new String();
-        String storedEndTime = new String();
-        String storedElapsedTime = new String();
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
-        try {
-            Date dateStart = format.parse(dtStart);
-            Date dateEnd = format.parse(dtEnd);
-            Long seconds = (dateEnd.getTime() - dateStart.getTime())/1000;
-            storedElapsedTime = seconds.toString();
-            storedStartTime = format.format(dateStart);
-            storedEndTime = format.format(dateEnd);
-            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime);
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
 
     }
@@ -159,6 +124,11 @@ public class EditHistory extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClick(View view) {
+        Intent hist = new Intent(getBaseContext(),EditHistory.class);
+        startActivity(hist);
     }
 
 }

@@ -543,6 +543,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public List<Map<String, String>> showActivityHistory (String activity){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        //Get results from query and save them in a cursor
+        Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where "+ Activity_COL2 +" = ?", new String[]{activity});
+
+        //Transform Cursor into ArrayList with type String
+        ArrayList<String> historyResultList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        StringBuffer buffer = new StringBuffer();
+        for (res.moveToLast(); !res.isBeforeFirst(); res.moveToPrevious()){
+            //Cursor starts counting at 0, since the name of the activity_activity_type is saved at the
+            // second position of the table it has to be 1
+            historyResultList.add(res.getString(1));
+            buffer.append("Start time: "+res.getString(3)+" "+" ");
+            buffer.append("End time: "+res.getString(4)+" "+" ");
+            buffer.append("Date: "+res.getString(6)+" "+" ");
+            buffer.append("Category: "+res.getString(7).replace("_"," ")+" "+" ");
+            arrayList.add(String.valueOf(buffer));
+            buffer.delete(0, buffer.length());
+        }
+
+
+
+        List<Map<String, String>> data = new ArrayList<>();
+
+        for (int j =0; j< historyResultList.size(); j++){
+
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("name", historyResultList.get(j));
+            resultMap.put("date", arrayList.get(j));
+            data.add(resultMap);
+        }
+
+
+        return data;
+    }
+
     public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
