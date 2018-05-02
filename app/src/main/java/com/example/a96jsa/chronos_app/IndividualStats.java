@@ -84,10 +84,14 @@ public class IndividualStats extends AppCompatActivity {
                 CustomColors.getColor("Light orange"),
                 CustomColors.getColor("Light blue"),
                 CustomColors.getColor("Light red")});
+        set.setValueTextSize(13);
+        set.setValueTextColor(Color.parseColor("WHITE"));
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
         pieChart.setHoleColor(CustomColors.getColor("Background color"));
+        pieChart.setEntryLabelTextSize(18);
+        pieChart.setHoleRadius(50);
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);

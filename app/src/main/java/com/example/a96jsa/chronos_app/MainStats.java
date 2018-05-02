@@ -50,10 +50,6 @@ public class MainStats extends AppCompatActivity {
         PieChart pieChart = (PieChart) findViewById(R.id.pie_chart_main);
         ArrayList<Integer> arrayListColors = new ArrayList<>();
         List<PieEntry> entries = new ArrayList<>();
-//        entries.add(new PieEntry(20,"Mex"));
-//        entries.add(new PieEntry(10,"Finland"));
-//        entries.add(new PieEntry(5,"Canada"));
-//        entries.add(new PieEntry(40,"Russia"));
 
 
         for(String category : categories){
@@ -69,15 +65,18 @@ public class MainStats extends AppCompatActivity {
         legend.setTextSize(23);
         legend.setEnabled(false);
         pieChart.getDescription().setEnabled(false);
-        pieChart.setHoleColor(CustomColors.getColor("Background color"));
-
 
         PieDataSet set = new PieDataSet(entries,"");
-        //set.setColors(new int[]{Color.RED,Color.BLUE,Color.CYAN,Color.DKGRAY});
+        set.setValueTextSize(13);
+        set.setValueTextColor(Color.parseColor("WHITE"));
         set.setColors(arrayListColors);
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
+        pieChart.setHoleColor(CustomColors.getColor("Background color"));
+        pieChart.setEntryLabelTextSize(18);
+        pieChart.setHoleRadius(50);
+
 
         pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
