@@ -1,5 +1,7 @@
 package com.example.a96jsa.chronos_app;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -46,6 +49,9 @@ public class MainScreen extends AppCompatActivity {
     long timeElapsed;
     long savedTime;
     boolean isRecording;
+    NotificationCompat.Builder mBuilder;
+    NotificationManager mNotificationManager;
+    int notificationID = 1;
 
      Chronometer simpleChronometer;
     SharedPreferences sharedPreferences;
@@ -153,6 +159,12 @@ public class MainScreen extends AppCompatActivity {
                 simpleChronometer.start();
                 isRecording = true;
 
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we are tracking time")
+                        .setSmallIcon(R.drawable.ic_add);
+
+
 
                 playButton.setClickable(false);
                 pauseButton.setClickable(true);
@@ -162,6 +174,15 @@ public class MainScreen extends AppCompatActivity {
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
                 startTime = cTime;
+
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we are tracking time")
+                        .setSmallIcon(R.drawable.ic_add);
+                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                mNotificationManager.notify(notificationID,mBuilder.build());
+
             }
         });
 
@@ -179,6 +200,14 @@ public class MainScreen extends AppCompatActivity {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
                 simpleChronometer.stop();
                 isRecording = false;
+
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we stop tracking time")
+                        .setSmallIcon(R.drawable.ic_add);
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                mNotificationManager.notify(notificationID,mBuilder.build());
 
                 //long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
