@@ -133,7 +133,7 @@ public class MainScreen extends AppCompatActivity {
                 simpleChronometer.stop();
                 long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
-                String totalTime = Long.toString(elapsedMillis);
+                String totalTime = Long.toString(elapsedMillis/1000);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
