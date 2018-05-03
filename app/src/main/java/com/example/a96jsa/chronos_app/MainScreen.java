@@ -45,7 +45,7 @@ public class MainScreen extends AppCompatActivity {
     private ListView listView;
     private String startTime;
     private String selectedCategory;
-    private int selectedActivityTotalTime;
+    private long selectedActivityTotalTime;
     private long selectedActivityElapsedTime;
     long timeStart;
     long timeStop;
@@ -117,13 +117,15 @@ public class MainScreen extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
-        //default selected Activity
+        //default selected Activity and Category
        selectedActivity = (String) listView.getItemAtPosition(0);
+        selectedCategory = categoryList.get(0);
         selectedAc = findViewById(R.id.selectedAct);
         String activityName = listView.getItemAtPosition(0).toString();
-        selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(activityName);
+       // selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(activityName);
+        selectedActivityTotalTime = databaseHelper.getActivityTotalTineFromCategoryTable(selectedActivity,selectedCategory);
         if(selectedActivityTotalTime > 0){
-            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime * 1000);
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime );
         }else {
             simpleChronometer.setBase(0);
         }
@@ -136,16 +138,22 @@ public class MainScreen extends AppCompatActivity {
 
                 selectedActivity    = (String) listView.getItemAtPosition(position);
 
+
                 selectedAc.setText(selectedActivity);
-                selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(selectedActivity);
+//                selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(selectedActivity);
+                //selectedActivityTotalTime = databaseHelper.getActivityTotalTineFromCategoryTable(selectedActivity,selectedCategory);
+                selectedActivityTotalTime =  databaseHelper.getActivityTotalTimeFromActivityTable(selectedActivity);
 
                 if(selectedActivityTotalTime > 0){
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime * 1000);
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime );
                 }else {
                     simpleChronometer.setBase(0);
                 }
 
-                playButton.setClickable(true);
+//                playButton.setClickable(true);
+//                if(timeElapsed > 0){
+//                    playButton.setClickable(false);
+//                }
 
 
                 final ArrayList<String> categoryList = databaseHelper.getCategories();
@@ -216,8 +224,8 @@ public class MainScreen extends AppCompatActivity {
 
 
 
-                playButton.setClickable(false);
-                pauseButton.setClickable(true);
+//                playButton.setClickable(false);
+//                pauseButton.setClickable(true);
                 Calendar rightNow = Calendar.getInstance();
                 int hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int minute = rightNow.get(Calendar.MINUTE);
@@ -251,6 +259,11 @@ public class MainScreen extends AppCompatActivity {
 //                    savedTime = timeElapsed + savedTime;
 //                }else {
 //                    savedTime = timeElapsed;
+//                }
+
+
+//                if(timeElapsed > 0){
+//                    pauseButton.setClickable(false);
 //                }
                 simpleChronometer.setBase(SystemClock.elapsedRealtime() - timeElapsed);
                 simpleChronometer.stop();
@@ -396,11 +409,11 @@ public class MainScreen extends AppCompatActivity {
 //
 //        }
         simpleChronometer.setBase(SystemClock.elapsedRealtime());
-        if(isRecording){
-            simpleChronometer.start();
-        }else {
-            simpleChronometer.stop();
-        }
+//        if(isRecording){
+//            simpleChronometer.start();
+//        }else {
+//            simpleChronometer.stop();
+//        }
 
 
 

@@ -218,6 +218,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return totalActivityTime;
     }
+    public long getActivityTotalTineFromCategoryTable(String activityName, String categoryName){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT totalTime FROM " + categoryName +" WHERE Type = ?",new String[]{activityName});
+        // totalCategoryTime equals 10 just for testing since no data time has been recorded
+        long totalActivityTime = 0;
+
+        while(cursor.moveToNext()){
+
+            Long cursorTime = Long.parseLong(cursor.getString(0));
+            totalActivityTime += cursorTime;
+
+        }
+
+        return totalActivityTime;
+    }
 
 
 
