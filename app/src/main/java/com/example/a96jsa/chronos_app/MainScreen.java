@@ -28,7 +28,6 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,8 +61,6 @@ public class MainScreen extends AppCompatActivity {
 
 
     public static final String SHAREDPREFERENCES = "SharePreferences" ;
-
-
 
 
     @Override
@@ -119,6 +116,7 @@ public class MainScreen extends AppCompatActivity {
                 TextView selectedAc = findViewById(R.id.selectedAct);
                 selectedAc.setText(selectedActivity);
 
+
                 final ArrayList<String> categoryList = databaseHelper.getCategories();
                 for(int i=0;i<categoryList.size();++i){
                     final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
@@ -132,27 +130,30 @@ public class MainScreen extends AppCompatActivity {
                         }
                     }
                 }
+                selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
 
           }
         });
 
         final TextView selectedAc = findViewById(R.id.selectedAct);
-        selectedAc.setText(theActivityList.get(0));
-        for(int i=0;i<categoryList.size();++i){
-            final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
-            Set set = activityList.entrySet();
-            Iterator iterator = set.iterator();
-            while (iterator.hasNext()){
-                Map.Entry mentry = (Map.Entry)iterator.next();
-                String ac = mentry.getKey().toString();
-                if(ac.equals(selectedAc.getText())){
-                    selectedCategory = categoryList.get(i);
+        if(!theActivityList.isEmpty()) {
+            selectedAc.setText(theActivityList.get(0));
+            for (int i = 0; i < categoryList.size(); ++i) {
+                final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
+                Set set = activityList.entrySet();
+                Iterator iterator = set.iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry mentry = (Map.Entry) iterator.next();
+                    String ac = mentry.getKey().toString();
+                    if (ac.equals(selectedAc.getText())) {
+                        selectedCategory = categoryList.get(i);
+                    }
                 }
             }
+            selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         }
         simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
-        pauseButton.setClickable(false);
         final ImageButton playButton = findViewById(R.id.playBut);
         if(savedInstanceState != null){
             simpleChronometer.setBase(savedInstanceState.getLong("elapsedTime"));
@@ -194,8 +195,6 @@ public class MainScreen extends AppCompatActivity {
 
                 mNotificationManager.notify(notificationID,mBuilder.build());
 
-
-
             }
         });
 
@@ -224,20 +223,19 @@ public class MainScreen extends AppCompatActivity {
 
                 //long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
-
-
-                String totalTime = Long.toString(savedTime);
+              
+                String totalTime = Long.toString(savedTime/1000);
                 Date c = Calendar.getInstance().getTime();
-                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
-                playButton.setClickable(true);
-                pauseButton.setClickable(false);
+                playButton.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.INVISIBLE);
                 Calendar rightNow = Calendar.getInstance();
                 int hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int minute = rightNow.get(Calendar.MINUTE);
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                //databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 
@@ -285,16 +283,6 @@ public class MainScreen extends AppCompatActivity {
                         return true;
                     }
                 });
-
-        FloatingActionButton launchCustomize = (FloatingActionButton) findViewById(R.id.fab);
-        launchCustomize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dynIntent = new Intent(getBaseContext(),Customize.class);
-                startActivity(dynIntent);
-            }
-        });
-
 
     }
 

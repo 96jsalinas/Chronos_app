@@ -2,20 +2,14 @@ package com.example.a96jsa.chronos_app;
 
 import java.util.ArrayList;
 
-import com.example.a96jsa.chronos_app.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +54,6 @@ public class MyAdapter extends ArrayAdapter<Model> {
         View rowView = null;
         if(!modelsArrayList.get(position).isGroupHeader()){
             rowView = inflater.inflate(R.layout.target_item, parent, false);
-           // rowView.setBackgroundColor(Color.RED);
 
             // 3. Get title
             TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
@@ -70,30 +63,14 @@ public class MyAdapter extends ArrayAdapter<Model> {
           if(isCategoryList) {
               categoryColor = databaseHelper.getCategoryColor(category);
           }else {
+              category=parentCategory;
               categoryColor = "BLUE";
               if(parentCategory!=null){
                   categoryColor=databaseHelper.getCategoryColor(parentCategory);
               }
           }
-//          if(categoryColor.contains("BLUE")){
-//              rowView.setBackgroundColor(Color.BLUE);
-//          }else{
-//              rowView.setBackgroundColor(Color.RED);
-//          }
-            switch (categoryColor){
-                case "BLUE":
-                    rowView.setBackgroundColor(Color.BLUE);
-                    break;
-                case "BLACK":
-                    rowView.setBackgroundColor(Color.BLACK);
-                    break;
-                case "YELLOW":
-                    rowView.setBackgroundColor(Color.YELLOW);
-                    break;
-                default:
-                    rowView.setBackgroundColor(Color.RED);
-                    break;
-            }
+
+            rowView.setBackgroundColor(CustomColors.getColor(categoryColor));
 
             titleView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,12 +89,23 @@ public class MyAdapter extends ArrayAdapter<Model> {
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(parent.getContext(),Customize.class);
-                    String category = modelsArrayList.get(position).getTitle();
-                    Model model = modelsArrayList.get(position);
-                    intent.putExtra("categoryName",category);
-                    intent.putExtra("preexisting","true");
-                    parent.getContext().startActivity(intent);
+                    if(isCategoryList) {
+                        Intent intent = new Intent(parent.getContext(), Customize.class);
+                        String category = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        intent.putExtra("preexisting", "true");
+                        parent.getContext().startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(parent.getContext(), Customize.class);
+                        String activity = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        intent.putExtra("categoryName", category);
+                        intent.putExtra("preexisting", "true");
+                        intent.putExtra("isActivity","true");
+                        intent.putExtra("activityName",activity);
+                        parent.getContext().startActivity(intent);
+                    }
                 }
             });
 
@@ -126,13 +114,19 @@ public class MyAdapter extends ArrayAdapter<Model> {
                 @Override
                 public void onClick(View v) {
                     if (isCategoryList) {
-                        Toast.makeText(parent.getContext(), "Should delete category", Toast.LENGTH_SHORT).show();
                         String category = modelsArrayList.get(position).getTitle();
                         Model model = modelsArrayList.get(position);
                         databaseHelper.deleteCategory(category);
                         remove(model);
                         notifyDataSetChanged();
                         Toast.makeText(parent.getContext(), category + " has been removed", Toast.LENGTH_SHORT).show();
+                    }else{
+                        String activity = modelsArrayList.get(position).getTitle();
+                        Model model = modelsArrayList.get(position);
+                        databaseHelper.deleteData(category,activity);
+                        remove(model);
+                        notifyDataSetChanged();
+                        Toast.makeText(parent.getContext(), activity + " has been removed", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -147,6 +141,11 @@ public class MyAdapter extends ArrayAdapter<Model> {
                         Model model = modelsArrayList.get(position);
                         intent.putExtra("categoryName", category);
                         parent.getContext().startActivity(intent);
+                    }else {
+                        Intent intent = new Intent(parent.getContext(),ActivityHistory.class);
+                        String activity = modelsArrayList.get(position).getTitle();
+                        intent.putExtra("activityName",activity);
+                        parent.getContext().startActivity(intent);
                     }
                 }
             });
@@ -158,7 +157,7 @@ public class MyAdapter extends ArrayAdapter<Model> {
 
         }
 
-        // 5. retrn rowView
+        // 5. return rowView
         return rowView;
     }
 

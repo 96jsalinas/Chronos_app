@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+            android:theme="@style/customTheme"/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -45,11 +45,35 @@
                     android:layout_weight="1"
                     android:text="Activity:" />
 
-                <Spinner
-                    android:id="@+id/spinActiv"
-                    android:layout_width="match_parent"
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutChangeName"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <TextView
+                    android:id="@+id/textChangeName"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:text="Name:" />
+
+                <Spinner
+                    android:id="@+id/activitySpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
 
             <LinearLayout
@@ -58,12 +82,12 @@
                 android:layout_height="43dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutChangeName">
 
                 <TextView
                     android:id="@+id/textStartTime"
@@ -78,16 +102,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="44dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -107,7 +131,89 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearDateStart"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+                <TextView
+                    android:id="@+id/textDateStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start date:" />
+
+                <EditText
+                    android:id="@+id/editDateStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearDateEnd"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearDateStart">
+
+                <TextView
+                    android:id="@+id/textDateEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="End date:" />
+
+                <EditText
+                    android:id="@+id/editDateEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearDateEnd">
+
+                <Button
+                    android:id="@+id/submitChange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Submit change" />
+
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
 

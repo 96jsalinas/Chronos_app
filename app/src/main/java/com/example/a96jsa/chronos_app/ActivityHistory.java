@@ -1,7 +1,6 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,82 +10,29 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-public class MainStats extends AppCompatActivity {
-
+public class ActivityHistory extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    private ListView historyView;
+    private DatabaseHelper databaseHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_stats);
-
+        setContentView(R.layout.activity_history2);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
-
-
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        ArrayList<String> categories = new ArrayList<>();
-        categories = db.getCategories();
-
-
-        PieChart pieChart = (PieChart) findViewById(R.id.pie_chart_main);
-        ArrayList<Integer> arrayListColors = new ArrayList<>();
-        List<PieEntry> entries = new ArrayList<>();
-
-
-        for(String category : categories){
-
-            Float totalTime = (float) db.getCategoryTotalTime(category);
-            String categoryColor = db.getCategoryColor(category);
-            arrayListColors.add(CustomColors.getColor(categoryColor));
-            entries.add(new PieEntry(totalTime,category));
-        }
-
-
-        Legend legend = pieChart.getLegend();
-        legend.setTextSize(23);
-        legend.setEnabled(false);
-        pieChart.getDescription().setEnabled(false);
-
-        PieDataSet set = new PieDataSet(entries,"");
-        set.setValueTextSize(13);
-        set.setValueTextColor(Color.parseColor("WHITE"));
-        set.setColors(arrayListColors);
-        PieData data = new PieData(set);
-        pieChart.setData(data);
-        pieChart.invalidate();
-        pieChart.setHoleColor(CustomColors.getColor("Background color"));
-        pieChart.setEntryLabelTextSize(18);
-        pieChart.setHoleRadius(50);
-
-
-        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                Intent intent = new Intent(getBaseContext(), ManageCategories.class);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-
+        historyView = findViewById(R.id.historyList);
+        databaseHelper = new DatabaseHelper(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -130,6 +76,34 @@ public class MainStats extends AppCompatActivity {
                     }
                 });
 
+        String activity=getIntent().getStringExtra("activityName");
+        final List<Map<String, String>> data = databaseHelper.showActivityHistory(activity);
+
+
+
+        SimpleAdapter adapter = new SimpleAdapter(this, data,
+                android.R.layout.simple_list_item_2,
+                new String[] {"name", "date"},
+                new int[] {android.R.id.text1,
+                        android.R.id.text2});
+        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
+
+
+        historyView.setAdapter(adapter);
+
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+            {
+                Object name = historyView.getItemAtPosition(position);
+                Intent intent = new Intent (getApplicationContext(), EditHistory.class);
+                intent.putExtra("Values", (Serializable) name);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
@@ -148,4 +122,10 @@ public class MainStats extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void onClick(View view) {
+        Intent hist = new Intent(getBaseContext(),EditHistory.class);
+        startActivity(hist);
+    }
+
 }

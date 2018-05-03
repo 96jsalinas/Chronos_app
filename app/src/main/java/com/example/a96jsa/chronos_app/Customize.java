@@ -1,7 +1,6 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,11 +25,12 @@ import java.util.ArrayList;
 public class Customize extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     String selectedCategory;
-    String selectedColor = "RED";
+    String selectedColor = "Dark blue";
     EditText editText;
     Button submitButton;
     Boolean categoryChecked = true;
     Boolean activityChecked = false;
+    private Boolean isActivity=false;
     private DrawerLayout mDrawerLayout;
     DatabaseHelper databaseHelper;
     String categoryName;
@@ -47,38 +46,59 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         mDrawerLayout = findViewById(R.id.drawer_layout);
         submitButton = (Button) findViewById(R.id.submitButton);
         editText = (EditText)findViewById(R.id.editText);
-        editText.setText(categoryName);
-        RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        RadioButton categoryButton = findViewById(R.id.catRadioButton);
-        RadioButton activityButton = findViewById(R.id.catRadioButton);
-        radioGroup.check(categoryButton.getId());
-        String preexistingStr = getIntent().getStringExtra("preexisting");
-        if(preexistingStr!=null){
-            preexisting=true;
-        }
-        databaseHelper = new DatabaseHelper(getApplicationContext());
 
+        databaseHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<String> categoryList = databaseHelper.getCategories();
 
+        String isAnActivity = getIntent().getStringExtra("isActivity");
+        final String oldname = getIntent().getStringExtra("activityName");
+        RadioGroup radioGroup = findViewById(R.id.radioGroup);
+        RadioButton categoryButton = findViewById(R.id.catRadioButton);
+        RadioButton activityButton = findViewById(R.id.actRadioButton);
         final Spinner categorySpinner = (Spinner)findViewById(R.id.categorySpinner);
         categorySpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categoryList);
         categorySpinner.setAdapter(categorySpinnerArrayAdapter);
         categorySpinner.setOnItemSelectedListener(this);
         categorySpinner.setVisibility(View.INVISIBLE);
-
         //spinner
 
         ArrayList<String> colorListString = new ArrayList<>();
-        colorListString.add("RED");
-        colorListString.add("BLUE");
-        colorListString.add("GREEN");
-        colorListString.add("YELLOW");
-        colorListString.add("MAGENTA");
+        colorListString.add("Dark blue");
+        colorListString.add("Light blue");
+        colorListString.add("Dark green");
+        colorListString.add("Light green");
+        colorListString.add("Dark yellow");
+        colorListString.add("Light yellow");
+        colorListString.add("Dark orange");
+        colorListString.add("Light orange");
+        colorListString.add("Dark red");
+        colorListString.add("Light red");
         final Spinner colorSpinner = (Spinner)findViewById(R.id.colorSpinner);
         final ArrayAdapter<String> colorSpinnerArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,colorListString);
         colorSpinner.setAdapter(colorSpinnerArrayAdapter);
         colorSpinner.setOnItemSelectedListener(this);
         colorSpinner.setVisibility(View.VISIBLE);
+
+        if(isAnActivity!=null){
+            isActivity=true;
+            editText.setText(oldname);
+            radioGroup.check(activityButton.getId());
+            activityChecked = true;
+            categoryChecked = false;
+            categorySpinner.setVisibility(View.VISIBLE);
+            colorSpinner.setVisibility(View.INVISIBLE);
+            categoryButton.setEnabled(false);
+        }else {
+            editText.setText(categoryName);
+            radioGroup.check(categoryButton.getId());
+            activityButton.setEnabled(false);
+        }
+
+        String preexistingStr = getIntent().getStringExtra("preexisting");
+        if(preexistingStr!=null){
+            preexisting=true;
+        }
+
 
 
 
@@ -130,14 +150,12 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                     case R.id.catRadioButton:
                         categoryChecked = true;
                         activityChecked = false;
-                        Toast.makeText(getApplicationContext(),"category checked",Toast.LENGTH_SHORT).show();
                         categorySpinner.setVisibility(View.INVISIBLE);
                         colorSpinner.setVisibility(View.VISIBLE);
                         break;
                     case R.id.actRadioButton:
                         activityChecked = true;
                         categoryChecked = false;
-                        Toast.makeText(getApplicationContext(),"activity checked",Toast.LENGTH_SHORT).show();
                         categorySpinner.setVisibility(View.VISIBLE);
                         colorSpinner.setVisibility(View.INVISIBLE);
                         break;
@@ -152,23 +170,43 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                 String ediTextValue = editText.getText().toString();
 
                 if(categoryChecked){
-                    databaseHelper.insertCategorytoCategoryTable(ediTextValue,selectedColor);
-                    databaseHelper.createCategoryTable(ediTextValue);
-                    categorySpinnerArrayAdapter.add(ediTextValue);
-                    categorySpinnerArrayAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                    if(preexisting){
+                        databaseHelper.editCategory(categoryName,ediTextValue,selectedColor);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        Toast.makeText(getApplicationContext(), "data edited", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }else {
+                        databaseHelper.insertCategorytoCategoryTable(ediTextValue, selectedColor);
+                        databaseHelper.createCategoryTable(ediTextValue);
+                        categorySpinnerArrayAdapter.add(ediTextValue);
+                        categorySpinnerArrayAdapter.notifyDataSetChanged();
+                        Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
+                    }
                 }
                 else {
-                    boolean checkActivity = databaseHelper.checkActivity(selectedCategory,ediTextValue);
-                    if(checkActivity){
-                        Toast.makeText(getApplicationContext(),"activity already exists",Toast.LENGTH_SHORT).show();
-                    }else{
-                        databaseHelper.insertCategoryTypes(selectedCategory,ediTextValue,selectedColor);
-                        databaseHelper.insertActivityToActivityTable(ediTextValue,selectedColor);
-                        Toast.makeText(getApplicationContext(),"data inserted",Toast.LENGTH_SHORT).show();
+                    if(preexisting) {
+                        boolean flag;
+                        if(categoryName.equals(selectedCategory)){
+                            flag=false;
+                        }else {
+                            flag=true;
+                        }
+                        databaseHelper.updateTypeData(categoryName,oldname,ediTextValue,selectedColor,selectedCategory,flag);
+                        Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                        startActivity(intent);
+                    }else {
+                        boolean checkActivity = databaseHelper.checkActivity(selectedCategory, ediTextValue);
+                        if (checkActivity) {
+                            Toast.makeText(getApplicationContext(), "activity already exists", Toast.LENGTH_SHORT).show();
+                        } else {
+                            databaseHelper.insertCategoryTypes(selectedCategory, ediTextValue, selectedColor);
+                            Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
+                            startActivity(intent);
+                        }
                     }
-
-
                 }
 
             }
@@ -201,12 +239,10 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         switch (viewId){
             case R.id.categorySpinner:
                 selectedCategory = parent.getSelectedItem().toString();
-                Toast.makeText(getApplicationContext(),selectedCategory,Toast.LENGTH_SHORT).show();
 
                 break;
             case R.id.colorSpinner:
-                selectedColor = parent.getSelectedItem().toString();;
-                Toast.makeText(getApplicationContext(),selectedColor,Toast.LENGTH_SHORT).show();
+                selectedColor = parent.getSelectedItem().toString();
 
 
         }

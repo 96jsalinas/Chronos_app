@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
 
-    android:background="#F3F3F3">
+    android:background="#ffebd8">
 
     <!-- title -->
     <TextView
@@ -23,6 +23,6 @@
         android:layout_height="1dp"
         android:layout_marginBottom="1dp"
         android:layout_alignParentBottom="true"
-        android:background="#DADADC" ></View>
+        android:background="#ffebd8" ></View>
 
 </RelativeLayout>

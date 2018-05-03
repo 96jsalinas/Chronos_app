@@ -2,9 +2,7 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -13,9 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,21 +78,13 @@ public class History extends AppCompatActivity {
                     }
                 });
 
-        FloatingActionButton launchCustomize = (FloatingActionButton) findViewById(R.id.fab);
-        launchCustomize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dynIntent = new Intent(getBaseContext(),EditHistory.class);
-                startActivity(dynIntent);
-            }
-        });
 
         //Selection for last week, can be found in minus 7
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_YEAR, -20);
         Date daysBeforeDate = cal.getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(daysBeforeDate);
 
         final List<Map<String, String>> data = databaseHelper.showHistory(formattedDate);
@@ -104,10 +96,21 @@ public class History extends AppCompatActivity {
                 new String[] {"name", "date"},
                 new int[] {android.R.id.text1,
                         android.R.id.text2});
-        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
 
 
         historyView.setAdapter(adapter);
+
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+            {
+                Object name = historyView.getItemAtPosition(position);
+                Intent intent = new Intent (getApplicationContext(), EditHistory.class);
+                intent.putExtra("Values", (Serializable) name);
+                startActivity(intent);
+            }
+        });
 
     }
 

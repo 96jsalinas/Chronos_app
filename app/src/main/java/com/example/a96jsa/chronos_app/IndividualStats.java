@@ -2,7 +2,6 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,18 +46,12 @@ public class IndividualStats extends AppCompatActivity {
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_indiv);
         List<PieEntry> entries = new ArrayList<>();
-//        entries.add(new PieEntry(20,"Mex"));
-//        entries.add(new PieEntry(10,"Finland"));
-//        entries.add(new PieEntry(5,"Canada"));
-//        entries.add(new PieEntry(21,"Russia"));
         if(activityList.size() > 0){
-            Toast.makeText(getApplicationContext(),"Not empty category", Toast.LENGTH_SHORT).show();
             Set set = activityList.entrySet();
             Iterator iterator = set.iterator();
             while (iterator.hasNext()){
                 Map.Entry mentry = (Map.Entry)iterator.next();
-               // entries.add(new PieEntry(Integer.parseInt(mentry.getValue().toString()),mentry.getKey().toString()));
-                entries.add(new PieEntry(10,mentry.getKey().toString()));
+                entries.add(new PieEntry(databaseHelper.getActivityTotalTime(categoryName,mentry.getKey().toString()),mentry.getKey().toString()));
             }
 
         }else {
@@ -73,10 +65,24 @@ public class IndividualStats extends AppCompatActivity {
 
 
         PieDataSet set = new PieDataSet(entries,"");
-        set.setColors(new int[]{Color.BLUE,Color.BLACK,Color.YELLOW,Color.RED});
+        set.setColors(new int[]{CustomColors.getColor("Dark blue"),
+                CustomColors.getColor("Dark red"),
+                CustomColors.getColor("Dark green"),
+                CustomColors.getColor("Dark orange"),
+                CustomColors.getColor("Dark yellow"),
+                CustomColors.getColor("Light yellow"),
+                CustomColors.getColor("Light green"),
+                CustomColors.getColor("Light orange"),
+                CustomColors.getColor("Light blue"),
+                CustomColors.getColor("Light red")});
+        set.setValueTextSize(13);
+        set.setValueTextColor(Color.parseColor("WHITE"));
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.invalidate();
+        pieChart.setHoleColor(CustomColors.getColor("Background color"));
+        pieChart.setEntryLabelTextSize(18);
+        pieChart.setHoleRadius(50);
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
