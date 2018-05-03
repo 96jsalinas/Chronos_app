@@ -56,6 +56,9 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:text="Selected Activity"
+                android:textColor="@color/Light_blue"
+                android:textSize="24sp"
+                android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

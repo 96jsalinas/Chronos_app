@@ -76,6 +76,7 @@ public class MainScreen extends AppCompatActivity {
                 TextView selectedAc = findViewById(R.id.selectedAct);
                 selectedAc.setText(selectedActivity);
 
+
                 final ArrayList<String> categoryList = databaseHelper.getCategories();
                 for(int i=0;i<categoryList.size();++i){
                     final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
@@ -89,6 +90,7 @@ public class MainScreen extends AppCompatActivity {
                         }
                     }
                 }
+                selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
 
           }
         });
@@ -107,6 +109,7 @@ public class MainScreen extends AppCompatActivity {
                 }
             }
         }
+        selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         final ImageButton playButton = findViewById(R.id.playBut);
