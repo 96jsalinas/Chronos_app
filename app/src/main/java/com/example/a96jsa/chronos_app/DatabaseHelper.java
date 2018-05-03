@@ -3,6 +3,7 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -482,6 +483,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{newID});
             String selectCategoryQuery = "UPDATE "+ ACTIVITY_TABLE +" SET categoryName  = replace(categoryName "+" ,  '"+ tableName + "', '"+newCategory+"') WHERE categoryName LIKE '%"+tableName+"%'";
             sqLiteDatabase.execSQL(selectCategoryQuery);
+            String oldTime = new String();
+            String newTime = new String();
+            String timeToWorkWith = new String();
+            Cursor oldTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + CATEGORY_TABLE + " where Type = ?", new String[]{tableName});
+            while (oldTimeCursor.moveToNext()){
+                oldTime = oldTimeCursor.getString(0);
+            }
+            Cursor newTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + CATEGORY_TABLE + " where Type = ?", new String[]{newCategory});
+            while (newTimeCursor.moveToNext()){
+                newTime = newTimeCursor.getString(0);
+            }
+
+           Cursor timeToWorkWithCursor = sqLiteDatabase.rawQuery("select TotalTime from " + newCategory + " where Type = ?", new String[]{newName});
+            while (timeToWorkWithCursor.moveToNext()){
+                timeToWorkWith = timeToWorkWithCursor.getString(0);
+            }
+           Integer oldTimeInteger = Integer.parseInt(oldTime);
+           Integer newTimeInteger = Integer.parseInt(newTime);
+           Integer timeToWorkWithIntger = Integer.parseInt(timeToWorkWith);
+
+           oldTimeInteger = oldTimeInteger - timeToWorkWithIntger;
+           newTimeInteger = newTimeInteger + timeToWorkWithIntger;
+
+           ContentValues oldTimeContentValues = new ContentValues();
+           oldTimeContentValues.put("TotalTime", oldTimeInteger.toString());
+           sqLiteDatabase.update(CATEGORY_TABLE, oldTimeContentValues, "Type = ?", new String[]{tableName});
+
+           ContentValues newTimeContentValues = new ContentValues();
+           newTimeContentValues.put("TotalTime", newTimeInteger.toString());
+           sqLiteDatabase.update(CATEGORY_TABLE, newTimeContentValues, "Type = ?", new String[]{newCategory});
+
+
             deleteData(tableName, newName);
         }
 

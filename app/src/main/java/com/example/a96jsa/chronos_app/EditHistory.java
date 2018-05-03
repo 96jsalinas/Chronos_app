@@ -93,7 +93,7 @@ public class EditHistory extends AppCompatActivity {
         String extra2 = hashMap.get("date");
         final String startTimeForQuerying = extra2.substring(12, 20);
         final String[] startTimeForStorage = {extra2.substring(12, 20)};
-        final String[] endTimeForStorage = {extra2.substring(32, 41)};
+        final String[] endTimeForStorage = {extra2.substring(32, 40)};
         final String[] nameForStorage = {extra};
 
 
