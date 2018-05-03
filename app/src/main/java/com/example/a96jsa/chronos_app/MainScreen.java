@@ -1,9 +1,19 @@
 package com.example.a96jsa.chronos_app;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -33,10 +43,28 @@ public class MainScreen extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView listView;
     private String startTime;
-    private String selectedCategory=null;
+    private String selectedCategory;
+    long timeStart;
+    long timeStop;
+    long timeElapsed;
+    long savedTime;
+    boolean isRecording;
+    NotificationCompat.Builder mBuilder;
+    NotificationManager mNotificationManager;
+    int notificationID = 1;
+
+    Intent notificationIntent;
+    PendingIntent pendingIntent;
+
+     Chronometer simpleChronometer;
+    SharedPreferences sharedPreferences;
+
+
+    public static final String SHAREDPREFERENCES = "SharePreferences" ;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
@@ -44,6 +72,21 @@ public class MainScreen extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         listView = findViewById(R.id.listView);
+
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        if(sharedPreferences != null){
+            timeStart = sharedPreferences.getLong("timeStart",0);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+        }
+
+        //notification intent and pendingIntent created
+        notificationIntent = new Intent(getApplicationContext(), MainScreen.class);
+        pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,notificationIntent,0);
+
+
+
+
 
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
@@ -109,35 +152,79 @@ public class MainScreen extends AppCompatActivity {
             }
             selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         }
-        final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
+        simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         final ImageButton playButton = findViewById(R.id.playBut);
-        pauseButton.setVisibility(View.INVISIBLE);
+        if(savedInstanceState != null){
+            simpleChronometer.setBase(savedInstanceState.getLong("elapsedTime"));
+        }
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedCategory!=null) {
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
-                    simpleChronometer.start();
-                    playButton.setVisibility(View.INVISIBLE);
-                    pauseButton.setVisibility(View.VISIBLE);
-                    Calendar rightNow = Calendar.getInstance();
-                    int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-                    int minute = rightNow.get(Calendar.MINUTE);
-                    int second = rightNow.get(Calendar.SECOND);
-                    String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
-                    startTime = cTime;
-                }
+
+                timeStart = System.currentTimeMillis();
+
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+                simpleChronometer.start();
+                isRecording = true;
+
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we are tracking time")
+                        .setSmallIcon(R.drawable.ic_add);
+
+
+
+                playButton.setClickable(false);
+                pauseButton.setClickable(true);
+                Calendar rightNow = Calendar.getInstance();
+                int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+                int minute = rightNow.get(Calendar.MINUTE);
+                int second = rightNow.get(Calendar.SECOND);
+                String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
+                startTime = cTime;
+
+
+
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we are tracking time")
+                        .setContentIntent(pendingIntent)
+                        .setSmallIcon(R.drawable.ic_add);
+
+
+                mNotificationManager.notify(notificationID,mBuilder.build());
+
             }
         });
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timeStop = System.currentTimeMillis();
+                timeElapsed = timeStop - timeStart;
+
+                if(savedTime > 0) {
+                    savedTime = timeElapsed + savedTime;
+                }else {
+                    savedTime = timeElapsed;
+                }
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
                 simpleChronometer.stop();
-                long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
+                isRecording = false;
+
+                mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("tracking")
+                        .setContentText("we stop tracking time")
+                        .setContentIntent(pendingIntent)
+                        .setSmallIcon(R.drawable.ic_add);
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(notificationID,mBuilder.build());
+
+                //long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
-                String totalTime = Long.toString(elapsedMillis/1000);
+              
+                String totalTime = Long.toString(savedTime/1000);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
@@ -197,6 +284,78 @@ public class MainScreen extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("timeStart",timeStart);
+        outState.putLong("savedTime",savedTime);
+        Toast.makeText(getApplicationContext(),"session saved",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        timeStart = savedInstanceState.getLong("timeStart");
+        savedTime = savedInstanceState.getLong("savedTime");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Context context = getApplicationContext();
+         sharedPreferences =  context.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("timeStart",timeStart);
+        editor.putLong("savedTime",savedTime);
+        editor.putBoolean("isRecording", isRecording);
+        editor.commit();
+
+
+//        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Toast.makeText(getApplicationContext(),"on stop called",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       Toast.makeText(getApplicationContext(),"on resume called",Toast.LENGTH_SHORT).show();
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        if(sharedPreferences != null){
+            timeStart = sharedPreferences.getLong("timeStart",0);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+        }
+        if(savedTime > 0){
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+
+        }
+        if(isRecording){
+            simpleChronometer.start();
+        }else {
+            simpleChronometer.stop();
+        }
+
+
+
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(getApplicationContext(),"on restart called",Toast.LENGTH_SHORT).show();
     }
 
     @Override
