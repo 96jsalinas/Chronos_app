@@ -27,8 +27,8 @@
 
             <ImageButton
                 android:id="@+id/playBut"
-                android:layout_width="50dp"
-                android:layout_height="35dp"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="72dp"
                 android:layout_weight="1"
@@ -38,14 +38,14 @@
 
             <ImageButton
                 android:id="@+id/pauseBut"
-                android:layout_width="50dp"
-                android:layout_height="35dp"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="72dp"
                 android:layout_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/playBut"
+                app:layout_constraintStart_toEndOf="@+id/selectedAct"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_pause_black_24dp" />
+                app:srcCompat="@drawable/ic_stop_black_24dp" />
 
             <TextView
                 android:id="@+id/selectedAct"

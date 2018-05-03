@@ -109,15 +109,15 @@ public class MainScreen extends AppCompatActivity {
         }
         final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
-        pauseButton.setClickable(false);
         final ImageButton playButton = findViewById(R.id.playBut);
+        pauseButton.setVisibility(View.INVISIBLE);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 simpleChronometer.setBase(SystemClock.elapsedRealtime());
                 simpleChronometer.start();
-                playButton.setClickable(false);
-                pauseButton.setClickable(true);
+                playButton.setVisibility(View.INVISIBLE);
+                pauseButton.setVisibility(View.VISIBLE);
                 Calendar rightNow = Calendar.getInstance();
                 int hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int minute = rightNow.get(Calendar.MINUTE);
@@ -137,8 +137,8 @@ public class MainScreen extends AppCompatActivity {
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
-                playButton.setClickable(true);
-                pauseButton.setClickable(false);
+                playButton.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.INVISIBLE);
                 Calendar rightNow = Calendar.getInstance();
                 int hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int minute = rightNow.get(Calendar.MINUTE);

@@ -11,14 +11,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class EditHistory extends AppCompatActivity {
 
@@ -27,7 +33,7 @@ public class EditHistory extends AppCompatActivity {
     private EditText editTextStart;
     private EditText editTextEnd;
     private DatabaseHelper databaseHelper;
-    private EditText editTextName;
+    private Spinner editTextName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +45,22 @@ public class EditHistory extends AppCompatActivity {
         button = findViewById(R.id.submitChange);
         editTextStart = findViewById(R.id.inputText);
         editTextEnd = findViewById(R.id.editText3);
-        editTextName = findViewById(R.id.inputTextName);
+        editTextName = findViewById(R.id.activitySpinner);
         databaseHelper = new DatabaseHelper(this);
+
+        final ArrayList<String> categoryList = databaseHelper.getCategories();
+        ArrayList<String> theActivityList = new ArrayList<>();
+        for(int i=0;i<categoryList.size();++i){
+            final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
+            Set set = activityList.entrySet();
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()){
+                Map.Entry mentry = (Map.Entry)iterator.next();
+                theActivityList.add(mentry.getKey().toString());
+            }
+        }
+        final ArrayAdapter<String> activitySpinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,theActivityList);
+        editTextName.setAdapter(activitySpinnerAdapter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,7 +123,7 @@ public class EditHistory extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 
-            String changedName = editTextName.getText().toString();
+            String changedName = editTextName.getSelectedItem().toString();
             String changedStartTime = editTextStart.getText().toString();
             String changedEndTime = editTextEnd.getText().toString();
 
