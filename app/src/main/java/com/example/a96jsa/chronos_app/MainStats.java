@@ -81,7 +81,7 @@ public class MainStats extends AppCompatActivity {
         pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Intent intent = new Intent(getBaseContext(), MainScreen.class);
+                Intent intent = new Intent(getBaseContext(), ManageCategories.class);
                 startActivity(intent);
             }
 
