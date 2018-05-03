@@ -2,6 +2,7 @@ package com.example.a96jsa.chronos_app;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +53,8 @@ public class MainScreen extends AppCompatActivity {
     NotificationCompat.Builder mBuilder;
     NotificationManager mNotificationManager;
     int notificationID = 1;
+    Intent notificationIntent;
+    PendingIntent pendingIntent;
 
      Chronometer simpleChronometer;
     SharedPreferences sharedPreferences;
@@ -78,6 +81,10 @@ public class MainScreen extends AppCompatActivity {
             savedTime = sharedPreferences.getLong("savedTime",0);
             isRecording = sharedPreferences.getBoolean("isRecording",false);
         }
+
+        //notification intent and pendingIntent created
+        notificationIntent = new Intent(getApplicationContext(), MainScreen.class);
+        pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,notificationIntent,0);
 
 
 
@@ -175,9 +182,12 @@ public class MainScreen extends AppCompatActivity {
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
                 startTime = cTime;
 
+
+
                 mBuilder = new NotificationCompat.Builder(getApplicationContext())
                         .setContentTitle("tracking")
                         .setContentText("we are tracking time")
+                        .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
                  mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -204,6 +214,7 @@ public class MainScreen extends AppCompatActivity {
                 mBuilder = new NotificationCompat.Builder(getApplicationContext())
                         .setContentTitle("tracking")
                         .setContentText("we stop tracking time")
+                        .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
