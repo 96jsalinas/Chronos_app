@@ -281,6 +281,7 @@ public class MainScreen extends AppCompatActivity {
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
                 //databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
                 databaseHelper.updateActivityData(selectedActivity,totalTime,Long.toString(timeStop),cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                databaseHelper.updateCategoryType(selectedActivity,totalTime,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 

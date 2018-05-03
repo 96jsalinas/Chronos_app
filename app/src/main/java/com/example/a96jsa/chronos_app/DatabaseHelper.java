@@ -270,7 +270,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("Color",color);
         cv.put("categoryName",categoryName);
         sqLiteDatabase.update(ACTIVITY_TABLE,cv,"activityName =?", new String[]{activityName});
-
+    }
+    public void updateCategoryType(String activityName,String totalTime, String color, String categoryName){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("totalTime", totalTime);;
+        cv.put("Color",color);
+        sqLiteDatabase.update(categoryName,cv,"Type =?", new String[]{activityName});
     }
     public void setActivityStartTime (String activityName, String startTime){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
