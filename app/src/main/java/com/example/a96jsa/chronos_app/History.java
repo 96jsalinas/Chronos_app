@@ -2,9 +2,7 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -21,7 +19,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +96,6 @@ public class History extends AppCompatActivity {
                 new String[] {"name", "date"},
                 new int[] {android.R.id.text1,
                         android.R.id.text2});
-        //final ArrayList<String> historyList = databaseHelper.showHistory(range);
 
 
         historyView.setAdapter(adapter);

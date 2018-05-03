@@ -2,7 +2,6 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,18 +46,11 @@ public class IndividualStats extends AppCompatActivity {
 
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart_indiv);
         List<PieEntry> entries = new ArrayList<>();
-//        entries.add(new PieEntry(20,"Mex"));
-//        entries.add(new PieEntry(10,"Finland"));
-//        entries.add(new PieEntry(5,"Canada"));
-//        entries.add(new PieEntry(21,"Russia"));
         if(activityList.size() > 0){
-            Toast.makeText(getApplicationContext(),"Not empty category", Toast.LENGTH_SHORT).show();
             Set set = activityList.entrySet();
             Iterator iterator = set.iterator();
             while (iterator.hasNext()){
                 Map.Entry mentry = (Map.Entry)iterator.next();
-               // entries.add(new PieEntry(Integer.parseInt(mentry.getValue().toString()),mentry.getKey().toString()));
-                //entries.add(new PieEntry(databaseHelper.getActivityTotalTime(mentry.getKey().toString()),mentry.getKey().toString()));
                 entries.add(new PieEntry(databaseHelper.getActivityTotalTime(categoryName,mentry.getKey().toString()),mentry.getKey().toString()));
             }
 

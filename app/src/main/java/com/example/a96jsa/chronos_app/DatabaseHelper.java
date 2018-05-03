@@ -3,7 +3,6 @@ package com.example.a96jsa.chronos_app;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -16,14 +15,7 @@ import java.util.Map;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    /*
 
-
-    * The methods will return the Boolean value true in order to make it possible to make
-    * Toast notifications to indicate for the user if the requested task was successful
-
-
-     */
 
     private final static String DATABASE_NAME = "Chronos.db";
 
@@ -150,13 +142,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-//    public ArrayList<String> getActivities(String category){
-//        return this.showPossibleActivities(category);
-//    }
+
     public HashMap<String,String>getActivities(String categoryName){
         String category = categoryName.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-//        Cursor res = sqLiteDatabase.rawQuery("SELECT * FROM sqlite_master WHERE type='table' AND name!='android_metadata' AND name!='sqlite_sequence' AND name!='Category'AND name!='Activity' ", null);
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT Type,TotalTime FROM " +category,null);
         HashMap<String,String> activityList = new HashMap<>();
         while (cursor.moveToNext()){
@@ -175,10 +164,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Integer getCategoryTotalTime(String categoryName){
         String category = categoryName.replace(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
-//        String[] columns = {"categoryName,totalTime"};
-//        String selection = "categoryName = ?";
-//        String[] selectionArgs = {category};
-//        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
 
         Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + CATEGORY_TABLE + " where Type = ? ",new String[]{category});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
@@ -201,10 +186,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int getActivityTotalTime(String categoryName, String activity){
         String category = categoryName.replace(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
-//        String[] columns = {"categoryName,totalTime"};
-//        String selection = "categoryName = ?";
-//        String[] selectionArgs = {category};
-//        Cursor cursor = db.query(ACTIVITY_TABLE,columns,selection,selectionArgs,null,null,null);
 
         Cursor cursor = db.rawQuery("SELECT TotalTime FROM " +category + " WHERE Type = ?",new String[]{activity});
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
@@ -392,10 +373,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.insert(ACTIVITY_TABLE,null,value);
         sqLiteDatabase.close();
     }
-
-//    public ArrayList<String> getCategories(){
-//        return this.showPossibleActivities(CATEGORY_TABLE);
-//    }
 
     public ArrayList<String> getCategories(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -656,15 +633,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             category = res.getString(7);
             oldTime = res.getString(5);
             }
-      //  Cursor res2 = sqLiteDatabase.rawQuery("select " +  Activity_COL8+" from " + ACTIVITY_TABLE + " where activityName = ? AND startTime = ?", new String[]{name, oldStartTime});
-       // Cursor res3 = sqLiteDatabase.rawQuery("select " + Activity_COL3 +" from " + ACTIVITY_TABLE + " where activityName = ? AND startTime = ?", new String[]{name, oldStartTime});
-        //while (res.moveToNext()){
-
-         //   category = res2.getString(0);
-        //     }
-       // while (res.moveToNext()){
-
-         //   oldTime = res3.getString(0); }
 
         //Update time in activity table
         ContentValues contentValues = new ContentValues();

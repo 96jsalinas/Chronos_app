@@ -2,20 +2,14 @@ package com.example.a96jsa.chronos_app;
 
 import java.util.ArrayList;
 
-import com.example.a96jsa.chronos_app.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -163,7 +157,7 @@ public class MyAdapter extends ArrayAdapter<Model> {
 
         }
 
-        // 5. retrn rowView
+        // 5. return rowView
         return rowView;
     }
 

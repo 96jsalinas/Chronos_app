@@ -1,7 +1,6 @@
 package com.example.a96jsa.chronos_app;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -87,7 +85,6 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
             radioGroup.check(activityButton.getId());
             activityChecked = true;
             categoryChecked = false;
-            Toast.makeText(getApplicationContext(),"activity checked",Toast.LENGTH_SHORT).show();
             categorySpinner.setVisibility(View.VISIBLE);
             colorSpinner.setVisibility(View.INVISIBLE);
             categoryButton.setEnabled(false);
@@ -153,14 +150,12 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                     case R.id.catRadioButton:
                         categoryChecked = true;
                         activityChecked = false;
-                        Toast.makeText(getApplicationContext(),"category checked",Toast.LENGTH_SHORT).show();
                         categorySpinner.setVisibility(View.INVISIBLE);
                         colorSpinner.setVisibility(View.VISIBLE);
                         break;
                     case R.id.actRadioButton:
                         activityChecked = true;
                         categoryChecked = false;
-                        Toast.makeText(getApplicationContext(),"activity checked",Toast.LENGTH_SHORT).show();
                         categorySpinner.setVisibility(View.VISIBLE);
                         colorSpinner.setVisibility(View.INVISIBLE);
                         break;
@@ -245,12 +240,10 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
         switch (viewId){
             case R.id.categorySpinner:
                 selectedCategory = parent.getSelectedItem().toString();
-                Toast.makeText(getApplicationContext(),selectedCategory,Toast.LENGTH_SHORT).show();
 
                 break;
             case R.id.colorSpinner:
-                selectedColor = parent.getSelectedItem().toString();;
-                Toast.makeText(getApplicationContext(),selectedColor,Toast.LENGTH_SHORT).show();
+                selectedColor = parent.getSelectedItem().toString();
 
 
         }
