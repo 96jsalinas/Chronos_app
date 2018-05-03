@@ -480,6 +480,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(selectQuery);
         if (flag) {
             sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{newID});
+            String selectCategoryQuery = "UPDATE "+ ACTIVITY_TABLE +" SET categoryName  = replace(categoryName "+" ,  '"+ tableName + "', '"+newCategory+"') WHERE categoryName LIKE '%"+tableName+"%'";
+            sqLiteDatabase.execSQL(selectCategoryQuery);
             deleteData(tableName, newName);
         }
 
