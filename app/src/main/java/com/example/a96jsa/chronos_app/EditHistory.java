@@ -167,7 +167,8 @@ public class EditHistory extends AppCompatActivity {
         String dtStart = changedStartTime;
         String dtEnd =   changedEndTime;
         String dtName = changedName;
-        String midnight = "24:00:00";
+        String midnight1 = "24:00:00";
+        String midnight2 = "00:00:00";
         String storedStartTime = new String();
         String storedEndTime = new String();
         String storedElapsedTime = new String();
@@ -175,14 +176,14 @@ public class EditHistory extends AppCompatActivity {
         Long seconds;
 
         try {
-                Date date = format.parse(midnight);
-
+                Date midnightT = format.parse(midnight1);
+                Date midnightT2 = format.parse(midnight2);
 
                 Date dateStart = format.parse(dtStart);
                 Date dateEnd = format.parse(dtEnd);
 
                 if (startDate != endDate){
-                     seconds = (date.getTime() - dateStart.getTime() + dateEnd.getTime()) / 1000;
+                     seconds = (midnightT.getTime() - dateStart.getTime() + (dateEnd.getTime()-midnightT2.getTime())) / 1000;
                 } else {
 
                      seconds = (dateEnd.getTime() - dateStart.getTime()) / 1000;

@@ -104,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
                 "Values('Gym', 'Dark red', '10:50:03', '10:50:09', '6', '2018-04-18', '2018-04-18', 'Sport')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
-                "Values('Studying', 'Dark blue', '10:50:09', '10:50:15', '6', '2018-04-18', 'Work')");
+                "Values('Studying', 'Dark blue', '10:50:09', '10:50:15', '6', '2018-04-18', '2018-04-18', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
                 "Values('Writing', 'Dark green', '10:50:15', '10:50:21', '6', '2018-04-18', '2018-04-18', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
@@ -632,7 +632,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where activityName = ? AND startTime = ?", new String[]{name, oldStartTime});
         while (res.moveToNext()){
             id = res.getString(0);
-            oldCategory = res.getString(7);
+            oldCategory = res.getString(8);
             oldTime = res.getString(5);
             }
 
@@ -668,14 +668,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Update time in general category table and type of activity table
         if (!oldStartTime.equals(changedStartTime) || !oldEndTime.equals(changedEndTime)||!oldCategory.equals(newCategory)) {
 
-            changeTotalTimeAfterHistoryUpdate(oldCategory, storedName, oldTime, storedElapsedTime);
+            changeTotalTimeAfterHistoryUpdate(newCategory, oldCategory, storedName ,name, oldTime, storedElapsedTime);
         }
 
     }
 
 
-    public void changeTotalTimeAfterHistoryUpdate(String category, String activityName, String oldTime, String newTime){
+    public void changeTotalTimeAfterHistoryUpdate(String newCategory, String category, String newActivityName, String oldActiviyName, String oldTime, String newTime){
         category = category.replace(" ","_");
+        newCategory = newCategory.replace(" ","_");
             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
             String currentActivityTotalTime = new String();
             String currentCategoryTotalTime = new String();
@@ -683,36 +684,83 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Integer additionalTime;
             Integer updatedActivityTotalTime;
             Integer updatedCategoryTotalTime;
-            Cursor activityCursor = sqLiteDatabase.rawQuery("select * from " + category + " where Type = ?", new String[]{activityName});
+            if(newCategory.equals(category)) {
+                Cursor activityCursor = sqLiteDatabase.rawQuery("select * from " + category + " where Type = ?", new String[]{newActivityName});
 
-            Cursor categoryCursor = sqLiteDatabase.rawQuery("select * from "+ CATEGORY_TABLE + " where Type = ?", new String[]{category});
+                Cursor categoryCursor = sqLiteDatabase.rawQuery("select * from " + CATEGORY_TABLE + " where Type = ?", new String[]{category});
 
-            additionalTime = Integer.parseInt(newTime);
+                additionalTime = Integer.parseInt(newTime);
 
 
-            timeToBeSubstracted = oldTime;
-            //Update time for category table
-            while (activityCursor.moveToNext()){
-                currentActivityTotalTime = activityCursor.getString(3);
+                timeToBeSubstracted = oldTime;
+                //Update time for category table
+                while (activityCursor.moveToNext()) {
+                    currentActivityTotalTime = activityCursor.getString(3);
+                }
+                Integer a = Integer.parseInt(currentActivityTotalTime);
+                Integer b = Integer.parseInt(timeToBeSubstracted);
+                updatedActivityTotalTime = a - b;
+                updatedActivityTotalTime = updatedActivityTotalTime + additionalTime;
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("TotalTime", updatedActivityTotalTime.toString());
+                sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{newActivityName});
+
+                //Update total category time
+                while (categoryCursor.moveToNext()) {
+                    currentCategoryTotalTime = categoryCursor.getString(3);
+                }
+                updatedCategoryTotalTime = Integer.parseInt(currentCategoryTotalTime) - Integer.parseInt(timeToBeSubstracted);
+                updatedCategoryTotalTime = updatedCategoryTotalTime + additionalTime;
+
+                ContentValues categoryContentValues = new ContentValues();
+                categoryContentValues.put("TotalTime", updatedCategoryTotalTime.toString());
+                sqLiteDatabase.update(CATEGORY_TABLE, categoryContentValues, "Type = ?", new String[]{category});
+            }else{
+                Cursor oldCatCursor = sqLiteDatabase.rawQuery("select TotalTime from "+ CATEGORY_TABLE +" where Type = ?",new String[] {category});
+                String oldCatPrevTime = "0";
+                while (oldCatCursor.moveToNext()){
+                    oldCatPrevTime = oldCatCursor.getString(0);
+                }
+                long newOldCatTime = Long.parseLong(oldCatPrevTime)-Long.parseLong(oldTime);
+                ContentValues newOldCatValues = new ContentValues();
+                newOldCatValues.put("TotalTime",newOldCatTime);
+                sqLiteDatabase.update(CATEGORY_TABLE,newOldCatValues,"Type = ?", new String[] {category});
+
+
+                Cursor newCatCursor = sqLiteDatabase.rawQuery("select TotalTime from "+ CATEGORY_TABLE+" where Type = ?",new String[] {newCategory});
+                String newCatPrevTime = "0";
+                while (newCatCursor.moveToNext()){
+                    newCatPrevTime = newCatCursor.getString(0);
+                }
+                long newCatnewTime = Long.parseLong(newCatPrevTime)+Long.parseLong(newTime);
+                ContentValues newCatValues = new ContentValues();
+                newCatValues.put("TotalTime",Long.toString(newCatnewTime));
+                sqLiteDatabase.update(CATEGORY_TABLE,newCatValues,"Type = ?", new String[] {newCategory});
+
+
+                Cursor oldSpecCatCursor = sqLiteDatabase.rawQuery("select TotalTime from "+category+" where Type = ?", new String[] {oldActiviyName});
+                String oldActPrevTime = "0";
+                while(oldSpecCatCursor.moveToNext()){
+                    oldActPrevTime = oldSpecCatCursor.getString(0);
+                }
+                long oldActNewTime = Long.parseLong(oldActPrevTime)-Long.parseLong(oldTime);
+                ContentValues oldActContVal = new ContentValues();
+                oldActContVal.put("TotalTime",Long.toString(oldActNewTime));
+                sqLiteDatabase.update(category,oldActContVal,"Type = ?",new String[] {oldActiviyName});
+
+
+                Cursor newSpecCatCursor = sqLiteDatabase.rawQuery("select TotalTime from "+newCategory+" where Type = ?",new String[] {newActivityName});
+                String newActPrevTime = "0";
+                while(newSpecCatCursor.moveToNext()){
+                    newActPrevTime = newSpecCatCursor.getString(0);
+                }
+                long newActNewTime = Long.parseLong(newActPrevTime)+Long.parseLong(newTime);
+                ContentValues newActContVal = new ContentValues();
+                newActContVal.put("TotalTime",Long.toString(newActNewTime));
+                sqLiteDatabase.update(newCategory,newActContVal,"Type = ?",new String[] {newActivityName});
+
             }
-            updatedActivityTotalTime = Integer.parseInt(currentActivityTotalTime) - Integer.parseInt(timeToBeSubstracted);
-            updatedActivityTotalTime = updatedActivityTotalTime + additionalTime;
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("TotalTime", updatedActivityTotalTime.toString());
-            sqLiteDatabase.update(category, contentValues, "Type = ?", new String[]{activityName});
-
-            //Update total category time
-            while (categoryCursor.moveToNext()){
-                currentCategoryTotalTime = categoryCursor.getString(3);
-            }
-            updatedCategoryTotalTime = Integer.parseInt(currentCategoryTotalTime) - Integer.parseInt(timeToBeSubstracted);
-            updatedCategoryTotalTime = updatedCategoryTotalTime + additionalTime;
-
-            ContentValues categoryContentValues = new ContentValues();
-            categoryContentValues.put("TotalTime", updatedCategoryTotalTime.toString());
-            sqLiteDatabase.update(CATEGORY_TABLE, categoryContentValues, "Type = ?", new String[]{category});
-
 
     }
 
