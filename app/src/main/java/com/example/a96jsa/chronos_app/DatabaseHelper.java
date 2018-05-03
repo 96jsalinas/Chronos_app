@@ -470,7 +470,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (res.moveToNext()){
              oldID = res.getString(0);
         }
-        newID = oldID+oldID;
+
+        String lastId=oldID;
+        Cursor acTimeCursor = sqLiteDatabase.rawQuery("select ID from " + newCategory, new String[]{});
+        while (acTimeCursor.moveToNext()){
+            lastId = acTimeCursor.getString(0);
+        }
+        int nId = Integer.parseInt(lastId)+1;
+        newID = Integer.toString(nId);
         //Update name
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", newID);
