@@ -510,6 +510,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Delete types of activities / Category
     public boolean deleteData (String tableName, String name){
         tableName = tableName.replace(" ","_");
+        name = name.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String acTime="0";
         Cursor acTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + tableName + " where Type = ?", new String[]{name});
@@ -622,16 +623,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName, String oldEndTime){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
-        String category = new String();
+        String oldCategory = new String();
         String oldTime = new String();
 
         //Get results from query and save them in a cursor
         Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where activityName = ? AND startTime = ?", new String[]{name, oldStartTime});
         while (res.moveToNext()){
             id = res.getString(0);
-            category = res.getString(7);
+            oldCategory = res.getString(7);
             oldTime = res.getString(5);
             }
+
+        //Change category if needed
+        Cursor tableCursor = sqLiteDatabase.rawQuery("SELECT Type FROM Category", null);
+        ArrayList<String> tableList = new ArrayList<>();
+        while (tableCursor.moveToNext()){
+            tableList.add(tableCursor.getString(0));
+            }
+        int i = 0;
+        boolean foundIt = false;
+        String newCategory = new String();
+
+        while (i < tableList.size() && !foundIt){
+            Cursor checkCursor = sqLiteDatabase.rawQuery("select Type from " + tableList.get(i) + " where Type = ?" , new String[]{storedName});
+                  if (checkCursor != null){
+                      newCategory = tableList.get(i);
+                      foundIt = true;
+                  }
+            i++;
+        }
+
 
         //Update time in activity table
         ContentValues contentValues = new ContentValues();
@@ -639,12 +660,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("endTime", changedEndTime);
         contentValues.put("totalTime", storedElapsedTime);
         contentValues.put("activityName", storedName);
+        contentValues.put("categoryName", newCategory);
         sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Update time in general category table and type of activity table
         if (!oldStartTime.equals(changedStartTime) && !oldEndTime.equals(changedEndTime)) {
 
-            changeTotalTimeAfterHistoryUpdate(category, storedName, oldTime, storedElapsedTime);
+            changeTotalTimeAfterHistoryUpdate(oldCategory, storedName, oldTime, storedElapsedTime);
         }
 
     }
