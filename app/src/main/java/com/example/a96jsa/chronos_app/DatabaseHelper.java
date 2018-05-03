@@ -646,7 +646,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         while (i < tableList.size() && !foundIt){
             Cursor checkCursor = sqLiteDatabase.rawQuery("select Type from " + tableList.get(i) + " where Type = ?" , new String[]{storedName});
-                  if (checkCursor != null){
+                  if (checkCursor.moveToNext()){
                       newCategory = tableList.get(i);
                       foundIt = true;
                   }
