@@ -528,7 +528,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         tableName = tableName.replace(" ","_");
         name = name.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String acTime="0";
+        Cursor acTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + tableName + " where Type = ?", new String[]{name});
+        while (acTimeCursor.moveToNext()){
+            acTime = acTimeCursor.getString(0);
+        }
+        String oldTime="0";
+        Cursor oldTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + CATEGORY_TABLE + " where Type = ?", new String[]{tableName});
+        while (oldTimeCursor.moveToNext()){
+            oldTime = oldTimeCursor.getString(0);
+        }
+        int newTime = Integer.parseInt(oldTime)-Integer.parseInt(acTime);
+        String newT = Integer.toString(newTime);
+        ContentValues newTimeContentValues = new ContentValues();
+        newTimeContentValues.put("TotalTime", newT);
+        sqLiteDatabase.update(CATEGORY_TABLE, newTimeContentValues, "Type = ?", new String[]{tableName});
+
         sqLiteDatabase.delete(tableName, "type = ?", new String[] {name});
+
 
         return true;
     }
