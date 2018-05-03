@@ -202,7 +202,6 @@ public class Customize extends AppCompatActivity implements AdapterView.OnItemSe
                             Toast.makeText(getApplicationContext(), "activity already exists", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insertCategoryTypes(selectedCategory, ediTextValue, selectedColor);
-                            databaseHelper.insertActivityToActivityTable(ediTextValue, selectedColor);
                             Toast.makeText(getApplicationContext(), "data inserted", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ManageCategories.class);
                             startActivity(intent);
