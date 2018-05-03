@@ -200,16 +200,6 @@ public class MainScreen extends AppCompatActivity {
                     }
                 });
 
-        FloatingActionButton launchCustomize = (FloatingActionButton) findViewById(R.id.fab);
-        launchCustomize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dynIntent = new Intent(getBaseContext(),Customize.class);
-                startActivity(dynIntent);
-            }
-        });
-
-
     }
 
     @Override
