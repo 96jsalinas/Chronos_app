@@ -510,7 +510,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Delete types of activities / Category
     public boolean deleteData (String tableName, String name){
         tableName = tableName.replace(" ","_");
-        name = name.replace(" ","_");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String acTime="0";
         Cursor acTimeCursor = sqLiteDatabase.rawQuery("select TotalTime from " + tableName + " where Type = ?", new String[]{name});
