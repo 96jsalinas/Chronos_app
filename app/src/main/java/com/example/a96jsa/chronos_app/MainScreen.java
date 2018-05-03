@@ -28,6 +28,7 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,18 +45,23 @@ public class MainScreen extends AppCompatActivity {
     private ListView listView;
     private String startTime;
     private String selectedCategory;
+    private int selectedActivityTotalTime;
+    private long selectedActivityElapsedTime;
     long timeStart;
     long timeStop;
     long timeElapsed;
     long savedTime;
+    String recordingActivity;
+    String  selectedActivity;
     boolean isRecording;
     NotificationCompat.Builder mBuilder;
     NotificationManager mNotificationManager;
     int notificationID = 1;
-
+    TextView selectedAc;
     Intent notificationIntent;
     PendingIntent pendingIntent;
-
+     ImageButton pauseButton;
+    ImageButton playButton;
      Chronometer simpleChronometer;
     SharedPreferences sharedPreferences;
 
@@ -72,6 +78,9 @@ public class MainScreen extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         listView = findViewById(R.id.listView);
+        simpleChronometer = findViewById(R.id.simpleChronometer);
+        pauseButton = findViewById(R.id.pauseBut);
+        playButton = findViewById(R.id.playBut);
 
         sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
         if(sharedPreferences != null){
@@ -108,13 +117,35 @@ public class MainScreen extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
+        //default selected Activity
+       selectedActivity = (String) listView.getItemAtPosition(0);
+        selectedAc = findViewById(R.id.selectedAct);
+        String activityName = listView.getItemAtPosition(0).toString();
+        selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(activityName);
+        if(selectedActivityTotalTime > 0){
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime * 1000);
+        }else {
+            simpleChronometer.setBase(0);
+        }
+
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String  selectedActivity    = (String) listView.getItemAtPosition(position);
-                TextView selectedAc = findViewById(R.id.selectedAct);
+                selectedActivity    = (String) listView.getItemAtPosition(position);
+
                 selectedAc.setText(selectedActivity);
+                selectedActivityTotalTime = databaseHelper.getActivityTotalTimeFromActivityTable(selectedActivity);
+
+                if(selectedActivityTotalTime > 0){
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime * 1000);
+                }else {
+                    simpleChronometer.setBase(0);
+                }
+
+                playButton.setClickable(true);
 
 
                 final ArrayList<String> categoryList = databaseHelper.getCategories();
@@ -135,6 +166,7 @@ public class MainScreen extends AppCompatActivity {
           }
         });
 
+
         final TextView selectedAc = findViewById(R.id.selectedAct);
         if(!theActivityList.isEmpty()) {
             selectedAc.setText(theActivityList.get(0));
@@ -152,9 +184,8 @@ public class MainScreen extends AppCompatActivity {
             }
             selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         }
-        simpleChronometer = findViewById(R.id.simpleChronometer);
-        final ImageButton pauseButton = findViewById(R.id.pauseBut);
-        final ImageButton playButton = findViewById(R.id.playBut);
+
+
         if(savedInstanceState != null){
             simpleChronometer.setBase(savedInstanceState.getLong("elapsedTime"));
         }
@@ -162,16 +193,26 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                timeStart = System.currentTimeMillis();
 
-                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+
+//                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+//                simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityTotalTime);
+
+//                timeStart = databaseHelper.getActivityStartTime(selectedActivity);
+//                if(timeStart > 0){
+//                    databaseHelper.setActivityStartTime(selectedActivity,Long.toString(timeStart));
+//                }else{
+//                    timeStart = System.currentTimeMillis();
+//                }
+                timeStart = System.currentTimeMillis();
+                databaseHelper.setActivityStartTime(selectedActivity,Long.toString(timeStart));
+
+                simpleChronometer.setBase(SystemClock.elapsedRealtime());
                 simpleChronometer.start();
                 isRecording = true;
+                recordingActivity = selectedActivity;
 
-                mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                        .setContentTitle("tracking")
-                        .setContentText("we are tracking time")
-                        .setSmallIcon(R.drawable.ic_add);
+//
 
 
 
@@ -187,12 +228,12 @@ public class MainScreen extends AppCompatActivity {
 
 
                 mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                        .setContentTitle("tracking")
+                        .setContentTitle(selectedActivity)
                         .setContentText("we are tracking time")
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
 
-
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(notificationID,mBuilder.build());
 
             }
@@ -201,15 +242,17 @@ public class MainScreen extends AppCompatActivity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timeStart = databaseHelper.getActivityStartTime(selectedActivity);
                 timeStop = System.currentTimeMillis();
                 timeElapsed = timeStop - timeStart;
+                selectedActivityElapsedTime = timeElapsed;
 
-                if(savedTime > 0) {
-                    savedTime = timeElapsed + savedTime;
-                }else {
-                    savedTime = timeElapsed;
-                }
-                simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+//                if(savedTime > 0) {
+//                    savedTime = timeElapsed + savedTime;
+//                }else {
+//                    savedTime = timeElapsed;
+//                }
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - timeElapsed);
                 simpleChronometer.stop();
                 isRecording = false;
 
@@ -224,18 +267,20 @@ public class MainScreen extends AppCompatActivity {
                 //long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
                 //Stuff to enter into activity table, will be extracted into separate java class soon
               
-                String totalTime = Long.toString(savedTime/1000);
+//                String totalTime = Long.toString(savedTime/1000);
+                String totalTime = Long.toString(timeElapsed);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
-                playButton.setVisibility(View.VISIBLE);
-                pauseButton.setVisibility(View.INVISIBLE);
+//                playButton.setVisibility(View.VISIBLE);
+//                pauseButton.setVisibility(View.INVISIBLE);
                 Calendar rightNow = Calendar.getInstance();
                 int hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int minute = rightNow.get(Calendar.MINUTE);
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                //databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                databaseHelper.updateActivityData(selectedActivity,totalTime,Long.toString(timeStop),cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 
@@ -307,6 +352,9 @@ public class MainScreen extends AppCompatActivity {
         Context context = getApplicationContext();
          sharedPreferences =  context.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("selectedActivity",selectedActivity);
+        editor.putLong("selectedActivityElapsedTime",selectedActivityElapsedTime);
+        editor.putString("recordingActivity",recordingActivity);
         editor.putLong("timeStart",timeStart);
         editor.putLong("savedTime",savedTime);
         editor.putBoolean("isRecording", isRecording);
@@ -333,14 +381,20 @@ public class MainScreen extends AppCompatActivity {
        Toast.makeText(getApplicationContext(),"on resume called",Toast.LENGTH_SHORT).show();
         sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
         if(sharedPreferences != null){
+            selectedActivity = sharedPreferences.getString("selectedActivity",selectedActivity);
+            if(selectedActivity != null){
+                selectedAc.setText(selectedActivity);
+            }
             timeStart = sharedPreferences.getLong("timeStart",0);
             savedTime = sharedPreferences.getLong("savedTime",0);
             isRecording = sharedPreferences.getBoolean("isRecording",false);
         }
-        if(savedTime > 0){
-            simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
-
-        }
+//        if(selectedActivityElapsedTime > 0){
+//      simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+//            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityElapsedTime);
+//
+//        }
+        simpleChronometer.setBase(SystemClock.elapsedRealtime());
         if(isRecording){
             simpleChronometer.start();
         }else {

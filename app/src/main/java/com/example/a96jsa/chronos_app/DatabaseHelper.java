@@ -200,6 +200,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return totalActivityTime;
     }
+// get activity totalTime from Activity table
+    public int getActivityTotalTimeFromActivityTable( String activity){
+        //String category = categoryName.replace(" ","_");
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT totalTime FROM Activity WHERE activityName = ?",new String[]{activity});
+        // totalCategoryTime equals 10 just for testing since no data time has been recorded
+        int totalActivityTime = 0;
+
+        while(cursor.moveToNext()){
+
+            Integer cursorTime = Integer.parseInt(cursor.getString(0));
+            totalActivityTime += cursorTime;
+
+        }
+
+        return totalActivityTime;
+    }
 
 
 
@@ -237,10 +255,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //insert returns -1 if it failed, so it is possible to check this way if it did work
         long result = sqLiteDatabase.insert(ACTIVITY_TABLE, null, contentValues);
 
-        addToTotalTime(activityName, totalTime, categoryName.replace(" ","_"));
+//        addToTotalTime(activityName, totalTime, categoryName.replace(" ","_"));
 
 
 
+    }
+    public void updateActivityData(String activityName,String totalTime, String endTime,String date, String endDate, String color, String categoryName){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("totalTime", totalTime);
+        cv.put("endTime",endTime);
+        cv.put("date",date);
+        cv.put("endDate",endDate);
+        cv.put("Color",color);
+        cv.put("categoryName",categoryName);
+        sqLiteDatabase.update(ACTIVITY_TABLE,cv,"activityName =?", new String[]{activityName});
+
+    }
+    public void setActivityStartTime (String activityName, String startTime){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("startTime",startTime);
+        sqLiteDatabase.update(ACTIVITY_TABLE,cv,"activityName =?", new String[]{activityName});
+
+    }
+    public Long getActivityStartTime(String activityName){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String[] projection = {"activityName", "startTime"};
+        String selection = "activityName =?";
+        String[] selectionArgs = {activityName};
+        Cursor cursor = sqLiteDatabase.query(ACTIVITY_TABLE,projection,selection,selectionArgs,null,null,null);
+        long startTime = 0;
+        while(cursor.moveToNext()){
+            startTime = cursor.getLong(1);
+        }
+        cursor.close();
+        return startTime;
     }
     public void addToTotalTime(String activityName, String time, String categoryName) {
         String category = categoryName.replace(" ","_");
