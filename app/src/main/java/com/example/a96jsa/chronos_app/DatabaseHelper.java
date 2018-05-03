@@ -540,8 +540,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + tableName);
         sqLiteDatabase.delete(CATEGORY_TABLE, "Type = ?",new String[]{tableName});
-
-
+        sqLiteDatabase.delete("Activity","categoryName = ?", new String[] {tableName});
         return true;
     }
 
