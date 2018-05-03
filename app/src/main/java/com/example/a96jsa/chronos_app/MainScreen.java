@@ -53,6 +53,7 @@ public class MainScreen extends AppCompatActivity {
     NotificationCompat.Builder mBuilder;
     NotificationManager mNotificationManager;
     int notificationID = 1;
+
     Intent notificationIntent;
     PendingIntent pendingIntent;
 
@@ -189,9 +190,11 @@ public class MainScreen extends AppCompatActivity {
                         .setContentText("we are tracking time")
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
-                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 
                 mNotificationManager.notify(notificationID,mBuilder.build());
+
+
 
             }
         });
@@ -217,7 +220,6 @@ public class MainScreen extends AppCompatActivity {
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
                 mNotificationManager.notify(notificationID,mBuilder.build());
 
                 //long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
