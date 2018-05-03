@@ -527,8 +527,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues newTimeContentValues = new ContentValues();
         newTimeContentValues.put("TotalTime", newT);
         sqLiteDatabase.update(CATEGORY_TABLE, newTimeContentValues, "Type = ?", new String[]{tableName});
-
         sqLiteDatabase.delete(tableName, "type = ?", new String[] {name});
+        sqLiteDatabase.delete("Activity","activityName = ?",new String[] {name});
 
 
         return true;
