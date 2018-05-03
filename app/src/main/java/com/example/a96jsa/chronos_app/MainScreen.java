@@ -36,7 +36,7 @@ public class MainScreen extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView listView;
     private String startTime;
-    private String selectedCategory;
+    private String selectedCategory=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,20 +96,22 @@ public class MainScreen extends AppCompatActivity {
         });
 
         final TextView selectedAc = findViewById(R.id.selectedAct);
-        selectedAc.setText(theActivityList.get(0));
-        for(int i=0;i<categoryList.size();++i){
-            final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
-            Set set = activityList.entrySet();
-            Iterator iterator = set.iterator();
-            while (iterator.hasNext()){
-                Map.Entry mentry = (Map.Entry)iterator.next();
-                String ac = mentry.getKey().toString();
-                if(ac.equals(selectedAc.getText())){
-                    selectedCategory = categoryList.get(i);
+        if(!theActivityList.isEmpty()) {
+            selectedAc.setText(theActivityList.get(0));
+            for (int i = 0; i < categoryList.size(); ++i) {
+                final HashMap<String, String> activityList = databaseHelper.getActivities(categoryList.get(i));
+                Set set = activityList.entrySet();
+                Iterator iterator = set.iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry mentry = (Map.Entry) iterator.next();
+                    String ac = mentry.getKey().toString();
+                    if (ac.equals(selectedAc.getText())) {
+                        selectedCategory = categoryList.get(i);
+                    }
                 }
             }
+            selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         }
-        selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         final ImageButton playButton = findViewById(R.id.playBut);
@@ -117,16 +119,18 @@ public class MainScreen extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                simpleChronometer.setBase(SystemClock.elapsedRealtime());
-                simpleChronometer.start();
-                playButton.setVisibility(View.INVISIBLE);
-                pauseButton.setVisibility(View.VISIBLE);
-                Calendar rightNow = Calendar.getInstance();
-                int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-                int minute = rightNow.get(Calendar.MINUTE);
-                int second = rightNow.get(Calendar.SECOND);
-                String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                startTime = cTime;
+                if(selectedCategory!=null) {
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                    simpleChronometer.start();
+                    playButton.setVisibility(View.INVISIBLE);
+                    pauseButton.setVisibility(View.VISIBLE);
+                    Calendar rightNow = Calendar.getInstance();
+                    int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+                    int minute = rightNow.get(Calendar.MINUTE);
+                    int second = rightNow.get(Calendar.SECOND);
+                    String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+                    startTime = cTime;
+                }
             }
         });
 

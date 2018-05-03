@@ -500,6 +500,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 timeToWorkWith = timeToWorkWithCursor.getString(0);
             }
            Integer oldTimeInteger = Integer.parseInt(oldTime);
+            if(newTime==null){
+                newTime="0";
+            }
            Integer newTimeInteger = Integer.parseInt(newTime);
            Integer timeToWorkWithIntger = Integer.parseInt(timeToWorkWith);
 
