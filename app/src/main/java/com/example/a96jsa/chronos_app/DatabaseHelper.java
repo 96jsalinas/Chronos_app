@@ -619,7 +619,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName){
+    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName, String oldEndTime){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
         String category = new String();
@@ -651,8 +651,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Update time in general category table and type of activity table
-       changeTotalTimeAfterHistoryUpdate(category, storedName, oldTime, storedElapsedTime);
+        if (!oldStartTime.equals(changedStartTime) && !oldEndTime.equals(changedEndTime)) {
 
+            changeTotalTimeAfterHistoryUpdate(category, storedName, oldTime, storedElapsedTime);
+        }
 
     }
 

@@ -114,6 +114,7 @@ public class EditHistory extends AppCompatActivity {
         final String startTimeForQuerying = extra2.substring(12, 20);
         final String[] startTimeForStorage = {extra2.substring(12, 20)};
         final String[] endTimeForStorage = {extra2.substring(32, 40)};
+        final String[] endTimeForComparison = {extra2.substring(32, 40)};
         final String[] nameForStorage = {extra};
 
 
@@ -139,14 +140,14 @@ public class EditHistory extends AppCompatActivity {
                     endTimeForStorage[0] = changedEndTime;
             }
 
-                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0], nameForStorage[0]);
+                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0], nameForStorage[0], endTimeForComparison[0]);
                 Intent intent = new Intent(getBaseContext(), History.class);
                 startActivity(intent);
             }
         });
     }
 
-    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime, String changedName) {
+    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime, String changedName, String endTimeForComparison) {
         String dtStart = changedStartTime;
         String dtEnd =   changedEndTime;
         String dtName = changedName;
@@ -162,7 +163,7 @@ public class EditHistory extends AppCompatActivity {
             storedElapsedTime = seconds.toString();
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
-            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName);
+            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName, endTimeForComparison);
 
 
         } catch (ParseException e) {
