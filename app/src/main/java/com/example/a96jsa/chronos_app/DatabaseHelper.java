@@ -663,7 +663,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Update time in general category table and type of activity table
-        if (!oldStartTime.equals(changedStartTime) && !oldEndTime.equals(changedEndTime)) {
+        if (!oldStartTime.equals(changedStartTime) || !oldEndTime.equals(changedEndTime)||!oldCategory.equals(newCategory)) {
 
             changeTotalTimeAfterHistoryUpdate(oldCategory, storedName, oldTime, storedElapsedTime);
         }
