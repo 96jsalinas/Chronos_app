@@ -189,10 +189,10 @@ public class MainScreen extends AppCompatActivity {
                 }else{
                     savedTime = timeElapsed;
                 }
-                simpleChronometer.setBase(SystemClock.elapsedRealtime()-savedTime);
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - timeElapsed*1000);
                 simpleChronometer.stop();
                 isRecording = false;
-                //Stuff to enter into activity table, will be extracted into separate java class soon
+
                 String totalTime = Long.toString(timeElapsed);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
