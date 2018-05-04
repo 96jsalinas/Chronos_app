@@ -161,20 +161,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public Integer getCategoryTotalTime(String categoryName){
+//    public Integer getCategoryTotalTime(String categoryName){
+//        String category = categoryName.replace(" ","_");
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + CATEGORY_TABLE + " where Type = ? ",new String[]{category});
+//        // totalCategoryTime equals 10 just for testing since no data time has been recorded
+//        Integer totalCategoryTime = 0;
+//
+//        while(cursor.moveToNext()){
+//            String cTime = cursor.getString(0);
+//            if(cTime==null){
+//                cTime="0";
+//            }
+//            Integer cursorTime = Integer.parseInt(cTime);
+//            totalCategoryTime = totalCategoryTime + cursorTime;
+//
+//        }
+//
+//        return totalCategoryTime;
+//    }
+    public Long getCategoryTotalTime(String categoryName){
         String category = categoryName.replace(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + CATEGORY_TABLE + " where Type = ? ",new String[]{category});
+        Cursor cursor = db.rawQuery("SELECT TotalTime FROM " + categoryName ,null);
         // totalCategoryTime equals 10 just for testing since no data time has been recorded
-        Integer totalCategoryTime = 0;
+        long totalCategoryTime = 0;
 
         while(cursor.moveToNext()){
             String cTime = cursor.getString(0);
             if(cTime==null){
                 cTime="0";
             }
-            Integer cursorTime = Integer.parseInt(cTime);
+            long cursorTime = Long.parseLong(cTime);
             totalCategoryTime = totalCategoryTime + cursorTime;
 
         }
