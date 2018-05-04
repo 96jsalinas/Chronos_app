@@ -262,6 +262,7 @@ public class MainScreen extends AppCompatActivity {
         outState.putLong("savedTime",savedTime);
         outState.putString("selectedCategory",theSelectedCat);
         outState.putString("selectedActivity",theSelectedAc);
+
     }
 
     @Override
@@ -271,6 +272,23 @@ public class MainScreen extends AppCompatActivity {
         savedTime = savedInstanceState.getLong("savedTime");
         theSelectedCat = savedInstanceState.getString("selectedCategory");
         theSelectedAc = savedInstanceState.getString("selectedActivity");
+        isRecording = savedInstanceState.getBoolean("isRecording");
+        if(isRecording) {
+            Calendar rightNow = Calendar.getInstance();
+            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            int minute = rightNow.get(Calendar.MINUTE);
+            int second = rightNow.get(Calendar.SECOND);
+            String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            try {
+                Date sDate = format.parse(startTime);
+                Date eDate = format.parse(cTime);
+                long tElapsed = (eDate.getTime() - sDate.getTime()) / 1000;
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - tElapsed * 1000);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -304,6 +322,22 @@ public class MainScreen extends AppCompatActivity {
             isRecording = sharedPreferences.getBoolean("isRecording",false);
             theSelectedAc = sharedPreferences.getString("selectedActivity",null);
             theSelectedCat = sharedPreferences.getString("selectedCategory",null);
+            if(isRecording) {
+                Calendar rightNow = Calendar.getInstance();
+                int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+                int minute = rightNow.get(Calendar.MINUTE);
+                int second = rightNow.get(Calendar.SECOND);
+                String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                try {
+                    Date sDate = format.parse(startTime);
+                    Date eDate = format.parse(cTime);
+                    long tElapsed = (eDate.getTime() - sDate.getTime()) / 1000;
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime() - tElapsed * 1000);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         if(savedTime > 0){
             simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
