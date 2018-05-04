@@ -1,6 +1,8 @@
 package com.example.a96jsa.chronos_app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
@@ -19,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +37,15 @@ public class MainScreen extends AppCompatActivity {
     private ListView listView;
     private String startTime;
     private String selectedCategory=null;
+    private boolean isRecording = false;
+    private String theSelectedAc;
+    private String theSelectedCat;
+    String timeStop;
+    long timeElapsed;
+    long savedTime;
+    Chronometer simpleChronometer;
+    SharedPreferences sharedPreferences;
+    public static final String SHAREDPREFERENCES = "SharePreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,15 @@ public class MainScreen extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         final DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES, Context.MODE_PRIVATE);
+        if(sharedPreferences!= null){
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+            startTime = sharedPreferences.getString("timeStart",null);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            theSelectedAc = sharedPreferences.getString("selectedActivity",null);
+            theSelectedCat = sharedPreferences.getString("selectedCategory",null);
+        }
 
         final ArrayList<String> categoryList = databaseHelper.getCategories();
         ArrayList<String> theActivityList = new ArrayList<>();
@@ -88,9 +109,15 @@ public class MainScreen extends AppCompatActivity {
                     }
                 }
                 selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
-
+                theSelectedAc = selectedActivity;
+                theSelectedCat = selectedCategory;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("selectedActivity",theSelectedAc);
+                editor.putString("selectedCategory",theSelectedCat);
+                editor.apply();
           }
         });
+
 
         final TextView selectedAc = findViewById(R.id.selectedAct);
         if(!theActivityList.isEmpty()) {
@@ -109,16 +136,25 @@ public class MainScreen extends AppCompatActivity {
             }
             selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(selectedCategory)));
         }
-        final Chronometer simpleChronometer = findViewById(R.id.simpleChronometer);
+        if(theSelectedAc!=null&&theSelectedCat!=null){
+            selectedAc.setText(theSelectedAc);
+            selectedAc.setTextColor(CustomColors.getColor(databaseHelper.getCategoryColor(theSelectedCat)));
+        }
+        simpleChronometer = findViewById(R.id.simpleChronometer);
         final ImageButton pauseButton = findViewById(R.id.pauseBut);
         final ImageButton playButton = findViewById(R.id.playBut);
-        pauseButton.setVisibility(View.INVISIBLE);
+        if(isRecording){
+            playButton.setVisibility(View.INVISIBLE);
+        }else {
+            pauseButton.setVisibility(View.INVISIBLE);
+        }
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(selectedCategory!=null) {
-                    simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                    simpleChronometer.setBase(SystemClock.elapsedRealtime()-savedTime);
                     simpleChronometer.start();
+                    isRecording = true;
                     playButton.setVisibility(View.INVISIBLE);
                     pauseButton.setVisibility(View.VISIBLE);
                     Calendar rightNow = Calendar.getInstance();
@@ -134,21 +170,41 @@ public class MainScreen extends AppCompatActivity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Calendar rightNow = Calendar.getInstance();
+                int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+                int minute = rightNow.get(Calendar.MINUTE);
+                int second = rightNow.get(Calendar.SECOND);
+                String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+                timeStop = cTime;
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                try {
+                    Date sDate = format.parse(startTime);
+                    Date eDate = format.parse(timeStop);
+                    timeElapsed = (eDate.getTime() - sDate.getTime()) / 1000;
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
+                if(savedTime > 0){
+                    savedTime = timeElapsed + savedTime;
+                }else{
+                    savedTime = timeElapsed;
+                }
+                simpleChronometer.setBase(SystemClock.elapsedRealtime()-savedTime);
                 simpleChronometer.stop();
-                long elapsedMillis = SystemClock.elapsedRealtime() - simpleChronometer.getBase();
+                isRecording = false;
                 //Stuff to enter into activity table, will be extracted into separate java class soon
-                String totalTime = Long.toString(elapsedMillis/1000);
+                String totalTime = Long.toString(timeElapsed);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c);
                 playButton.setVisibility(View.VISIBLE);
                 pauseButton.setVisibility(View.INVISIBLE);
-                Calendar rightNow = Calendar.getInstance();
-                int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-                int minute = rightNow.get(Calendar.MINUTE);
-                int second = rightNow.get(Calendar.SECOND);
-                String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                rightNow = Calendar.getInstance();
+                hour = rightNow.get(Calendar.HOUR_OF_DAY);
+                minute = rightNow.get(Calendar.MINUTE);
+                second = rightNow.get(Calendar.SECOND);
+                cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
+                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(theSelectedCat),theSelectedCat);
             }
         });
 
@@ -200,10 +256,65 @@ public class MainScreen extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("timeStart",startTime);
+        outState.putLong("savedTime",savedTime);
+        outState.putString("selectedCategory",theSelectedCat);
+        outState.putString("selectedActivity",theSelectedAc);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        startTime = savedInstanceState.getString("timeStart");
+        savedTime = savedInstanceState.getLong("savedTime");
+        theSelectedCat = savedInstanceState.getString("selectedCategory");
+        theSelectedAc = savedInstanceState.getString("selectedActivity");
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_screen, menu);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Context context = getApplicationContext();
+        sharedPreferences =  context.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("timeStart",startTime);
+        editor.putLong("savedTime",savedTime);
+        editor.putBoolean("isRecording", isRecording);
+        editor.putString("selectedActivity",theSelectedAc);
+        editor.putString("selectedCategory",theSelectedCat);
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES,Context.MODE_PRIVATE);
+        if(sharedPreferences != null){
+            startTime = sharedPreferences.getString("timeStart",null);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+            theSelectedAc = sharedPreferences.getString("selectedActivity",null);
+            theSelectedCat = sharedPreferences.getString("selectedCategory",null);
+        }
+        if(savedTime > 0){
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
+
+        }
+        if(isRecording){
+            simpleChronometer.start();
+        }else {
+            simpleChronometer.stop();
+        }
+
     }
 
     @Override

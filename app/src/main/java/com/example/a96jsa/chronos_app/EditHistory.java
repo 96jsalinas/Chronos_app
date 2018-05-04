@@ -182,7 +182,7 @@ public class EditHistory extends AppCompatActivity {
             Date dateStart = format.parse(dtStart);
             Date dateEnd = format.parse(dtEnd);
 
-            if (startDate != endDate){
+            if (!startDate.equals(endDate)){
                 seconds = (midnightT.getTime() - dateStart.getTime() + (dateEnd.getTime()-midnightT2.getTime())) / 1000;
             } else {
 
