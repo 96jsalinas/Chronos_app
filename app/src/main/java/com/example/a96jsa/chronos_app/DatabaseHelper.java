@@ -461,12 +461,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("Type", newName);
         contentValues.put ("Color", newColor);
         sqLiteDatabase.update(tableName, contentValues, "ID = ?", new String[]{oldID});
-        String selectQuery = "UPDATE "+ ACTIVITY_TABLE +" SET activityName  = replace(activityName "+" ,  '"+ oldName + "', '"+newName+"') WHERE activityName LIKE '%"+oldName+"%'";
-        sqLiteDatabase.execSQL(selectQuery);
+        //String selectQuery = "UPDATE "+ ACTIVITY_TABLE +" SET activityName  = replace(activityName "+" ,  '"+ oldName + "', '"+newName+"') WHERE activityName LIKE '%"+oldName+"%'";
+        //sqLiteDatabase.execSQL(selectQuery);
+        ContentValues nameValue = new ContentValues();
+        nameValue.put("activityName",newName);
+        sqLiteDatabase.update(ACTIVITY_TABLE,nameValue,"activityName = ?", new String[] {oldName});
         if (flag) {
             sqLiteDatabase.execSQL("INSERT INTO " + newCategory + " select * from " + tableName + " where ID = ?", new String[]{newID});
-            String selectCategoryQuery = "UPDATE "+ ACTIVITY_TABLE +" SET categoryName  = replace(categoryName "+" ,  '"+ tableName + "', '"+newCategory+"') WHERE categoryName LIKE '%"+tableName+"%'";
-            sqLiteDatabase.execSQL(selectCategoryQuery);
+            //String selectCategoryQuery = "UPDATE "+ ACTIVITY_TABLE +" SET categoryName  = replace(categoryName "+" ,  '"+ tableName + "', '"+newCategory+"') WHERE activityName LIKE '%"+newName+"%'";
+            //sqLiteDatabase.execSQL(selectCategoryQuery);
+            ContentValues catValues = new ContentValues();
+            catValues.put("categoryName",newCategory);
+            sqLiteDatabase.update(ACTIVITY_TABLE,catValues,"activityName = ?", new String[]{newName});
             String oldTime = new String();
             String newTime = new String();
             String timeToWorkWith = new String();
@@ -502,7 +508,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
            sqLiteDatabase.update(CATEGORY_TABLE, newTimeContentValues, "Type = ?", new String[]{newCategory});
 
 
-            deleteData(tableName, newName);
+           sqLiteDatabase.delete(tableName,"Type = ?",new String[] {oldName});
+            //deleteData(tableName, newName);
         }
 
     }
