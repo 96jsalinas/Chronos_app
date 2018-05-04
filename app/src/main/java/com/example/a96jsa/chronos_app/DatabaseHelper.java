@@ -83,7 +83,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Studying', 'Dark blue','6')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Writing', 'Dark green','6')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Exercices', 'Dark yellow','6')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Work (Type, Color, TotalTime) VALUES('Lecture recap', 'Dark red','6')");
 
         sqLiteDatabase.execSQL("INSERT or replace INTO Housework (Type, Color, TotalTime) VALUES('Cleaning', 'Dark blue','6')");
@@ -108,8 +107,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Values('Studying', 'Dark blue', '10:50:09', '10:50:15', '6', '2018-04-18', '2018-04-18', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
                 "Values('Writing', 'Dark green', '10:50:15', '10:50:21', '6', '2018-04-18', '2018-04-18', 'Work')");
-        sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
-                "Values('Exercises', 'Dark yellow', '10:50:21', '10:50:27', '6', '2018-04-18', '2018-04-18', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
                 "Values('Lecture recap', 'Dark red', '10:50:27', '10:50:33', '6', '2018-04-18', '2018-04-18', 'Work')");
         sqLiteDatabase.execSQL("INSERT or replace INTO Activity (activityName, Color, startTime, endTime, totalTime, date, endDate, categoryName) " +
