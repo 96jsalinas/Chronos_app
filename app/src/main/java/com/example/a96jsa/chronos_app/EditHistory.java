@@ -32,6 +32,8 @@ public class EditHistory extends AppCompatActivity {
     private Button button;
     private EditText editTextStart;
     private EditText editTextEnd;
+    private EditText editDateStart;
+    private EditText editDateEnd;
     private DatabaseHelper databaseHelper;
     private Spinner editTextName;
 
@@ -45,6 +47,8 @@ public class EditHistory extends AppCompatActivity {
         button = findViewById(R.id.submitChange);
         editTextStart = findViewById(R.id.inputText);
         editTextEnd = findViewById(R.id.editText3);
+        editDateStart = findViewById(R.id.editDateStart);
+        editDateEnd = findViewById(R.id.editDateEnd);
         editTextName = findViewById(R.id.activitySpinner);
         databaseHelper = new DatabaseHelper(this);
 
@@ -116,6 +120,8 @@ public class EditHistory extends AppCompatActivity {
         final String[] endTimeForStorage = {extra2.substring(32, 40)};
         final String[] endTimeForComparison = {extra2.substring(32, 40)};
         final String[] nameForStorage = {extra};
+        final String[] startDate = {extra2.substring(52, 60)};
+        final String[] endDate = {extra2.substring(72, 80)};
 
 
         textView.setText(extra + " " + " " + extra2);
@@ -123,43 +129,65 @@ public class EditHistory extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
-            String changedName = editTextName.getSelectedItem().toString();
-            String changedStartTime = editTextStart.getText().toString();
-            String changedEndTime = editTextEnd.getText().toString();
 
-            if (changedName != null && !changedName.isEmpty()){
+                String changedName = editTextName.getSelectedItem().toString();
+                String changedStartTime = editTextStart.getText().toString();
+                String changedEndTime = editTextEnd.getText().toString();
+                String changedStartDate = editDateStart.getText().toString();
+                String changedEndDate = editDateEnd.getText().toString();
+
+                if (changedName != null && !changedName.isEmpty()){
                     nameForStorage[0] = changedName;
                 }
 
-            if (changedStartTime != null && !changedStartTime.isEmpty()){
-                startTimeForStorage[0] = changedStartTime;
-            }
+                if (changedStartTime != null && !changedStartTime.isEmpty()){
+                    startTimeForStorage[0] = changedStartTime;
+                }
 
-            if (changedEndTime != null && !changedEndTime.isEmpty()){
+                if (changedEndTime != null && !changedEndTime.isEmpty()){
                     endTimeForStorage[0] = changedEndTime;
-            }
+                }
 
-                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0], nameForStorage[0], endTimeForComparison[0]);
+                if (changedStartDate != null && !changedStartDate.isEmpty()){
+                    startDate[0] = changedStartDate;
+                }
+
+                if (changedEndDate != null && !changedEndDate.isEmpty()){
+                    endDate[0] = changedEndDate;
+                }
+
+                calculateNewElapsedTime(extra, startTimeForQuerying, startTimeForStorage[0], endTimeForStorage[0], nameForStorage[0], endTimeForComparison[0], startDate[0], endDate[0]);
                 Intent intent = new Intent(getBaseContext(), History.class);
                 startActivity(intent);
             }
         });
     }
 
-    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime, String changedName, String endTimeForComparison) {
+    private void calculateNewElapsedTime(String extra, String substring, String changedStartTime, String changedEndTime, String changedName, String endTimeForComparison, String startDate, String endDate) {
         String dtStart = changedStartTime;
         String dtEnd =   changedEndTime;
         String dtName = changedName;
+        String midnight1 = "24:00:00";
+        String midnight2 = "00:00:00";
         String storedStartTime = new String();
         String storedEndTime = new String();
         String storedElapsedTime = new String();
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Long seconds;
 
         try {
+            Date midnightT = format.parse(midnight1);
+            Date midnightT2 = format.parse(midnight2);
+
             Date dateStart = format.parse(dtStart);
             Date dateEnd = format.parse(dtEnd);
-            Long seconds = (dateEnd.getTime() - dateStart.getTime())/1000;
+
+            if (startDate != endDate){
+                seconds = (midnightT.getTime() - dateStart.getTime() + (dateEnd.getTime()-midnightT2.getTime())) / 1000;
+            } else {
+
+                seconds = (dateEnd.getTime() - dateStart.getTime()) / 1000;
+            }
             storedElapsedTime = seconds.toString();
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
