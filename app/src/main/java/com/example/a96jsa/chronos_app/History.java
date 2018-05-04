@@ -79,15 +79,7 @@ public class History extends AppCompatActivity {
                 });
 
 
-        //Selection for last week, can be found in minus 7
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_YEAR, -20);
-        Date daysBeforeDate = cal.getTime();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = df.format(daysBeforeDate);
-
-        final List<Map<String, String>> data = databaseHelper.showHistory(formattedDate);
+        final List<Map<String, String>> data = databaseHelper.showHistory();
 
 
 

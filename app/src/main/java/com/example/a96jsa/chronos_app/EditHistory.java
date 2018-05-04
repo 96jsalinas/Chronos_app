@@ -46,10 +46,15 @@ public class EditHistory extends AppCompatActivity {
         TextView textView = findViewById(R.id.textActivity);
         button = findViewById(R.id.submitChange);
         editTextStart = findViewById(R.id.inputText);
+        editTextStart.setText("12:00:00");
         editTextEnd = findViewById(R.id.editText3);
+        editTextEnd.setText("12:15:15");
         editDateStart = findViewById(R.id.editDateStart);
+        editDateStart.setText("2018-01-01");
         editDateEnd = findViewById(R.id.editDateEnd);
+        editDateEnd.setText("2018-01-01");
         editTextName = findViewById(R.id.activitySpinner);
+
         databaseHelper = new DatabaseHelper(this);
 
         final ArrayList<String> categoryList = databaseHelper.getCategories();
@@ -191,7 +196,7 @@ public class EditHistory extends AppCompatActivity {
             storedElapsedTime = seconds.toString();
             storedStartTime = format.format(dateStart);
             storedEndTime = format.format(dateEnd);
-            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName, endTimeForComparison);
+            databaseHelper.updateHistory(extra, substring, storedStartTime, storedEndTime, storedElapsedTime, dtName, endTimeForComparison, startDate, endDate);
 
 
         } catch (ParseException e) {

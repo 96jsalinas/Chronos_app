@@ -555,10 +555,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Show history
-    public List<Map<String, String>> showHistory (String range){
+    public List<Map<String, String>> showHistory (){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         //Get results from query and save them in a cursor
-        Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE + " where "+ Activity_COL6 +" >= ?", new String[]{range});
+        Cursor res = sqLiteDatabase.rawQuery("select  * from " + ACTIVITY_TABLE,null);
 
         //Transform Cursor into ArrayList with type String
         ArrayList<String> historyResultList = new ArrayList<String>();
@@ -631,7 +631,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName, String oldEndTime){
+    public  void updateHistory(String name, String oldStartTime, String changedStartTime, String changedEndTime, String storedElapsedTime, String storedName, String oldEndTime, String startDate, String endDate){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String id = new String();
         String oldCategory = new String();
@@ -672,6 +672,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("totalTime", storedElapsedTime);
         contentValues.put("activityName", storedName);
         contentValues.put("categoryName", newCategory);
+        contentValues.put("date", startDate);
+        contentValues.put("endDate", endDate);
         sqLiteDatabase.update(ACTIVITY_TABLE, contentValues, "ID = ?", new String[]{id});
 
         //Update time in general category table and type of activity table
