@@ -92,7 +92,7 @@ public class MainScreen extends AppCompatActivity {
         //notification intent and pendingIntent created
         notificationIntent = new Intent(getApplicationContext(), MainScreen.class);
         pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,notificationIntent,0);
-
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
 
@@ -241,7 +241,7 @@ public class MainScreen extends AppCompatActivity {
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
 
-                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
                 mNotificationManager.notify(notificationID,mBuilder.build());
 
             }
@@ -270,7 +270,7 @@ public class MainScreen extends AppCompatActivity {
                 isRecording = false;
 
                 mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                        .setContentTitle("tracking")
+                        .setContentTitle(selectedCategory)
                         .setContentText("we stop tracking time")
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_add);
@@ -375,7 +375,7 @@ public class MainScreen extends AppCompatActivity {
         editor.commit();
 
 
-//        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"on paused called",Toast.LENGTH_SHORT).show();
 
 
 
@@ -403,17 +403,18 @@ public class MainScreen extends AppCompatActivity {
             savedTime = sharedPreferences.getLong("savedTime",0);
             isRecording = sharedPreferences.getBoolean("isRecording",false);
         }
-//        if(selectedActivityElapsedTime > 0){
-//      simpleChronometer.setBase(SystemClock.elapsedRealtime() - savedTime);
-//            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityElapsedTime);
-//
-//        }
-        simpleChronometer.setBase(SystemClock.elapsedRealtime());
-//        if(isRecording){
-//            simpleChronometer.start();
-//        }else {
-//            simpleChronometer.stop();
-//        }
+        if(timeElapsed > 0){
+            simpleChronometer.setBase(SystemClock.elapsedRealtime() - selectedActivityElapsedTime);
+
+        }else{
+            simpleChronometer.setBase(SystemClock.elapsedRealtime());
+        }
+
+        if(isRecording){
+            simpleChronometer.start();
+        }else {
+            simpleChronometer.stop();
+        }
 
 
 
