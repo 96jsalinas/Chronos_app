@@ -425,6 +425,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("Type", newName);
         contentValues.put("Color", newColor);
         sqLiteDatabase.update(CATEGORY_TABLE, contentValues, "ID = ?", new String[]{id});
+        ContentValues acTbCon = new ContentValues();
+        acTbCon.put("categoryName",newName);
+        sqLiteDatabase.update(ACTIVITY_TABLE,acTbCon,"categoryName = ?", new String[] {oldName});
 
         //Change name of responding table
         if(!oldName.equals(newName)) {
