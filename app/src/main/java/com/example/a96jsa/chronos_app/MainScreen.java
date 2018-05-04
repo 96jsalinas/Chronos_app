@@ -1,11 +1,14 @@
 package com.example.a96jsa.chronos_app;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -46,6 +49,11 @@ public class MainScreen extends AppCompatActivity {
     Chronometer simpleChronometer;
     SharedPreferences sharedPreferences;
     public static final String SHAREDPREFERENCES = "SharePreferences";
+    NotificationCompat.Builder mBuilder;
+    NotificationManager mNotificationManager;
+    Intent notificationIntent;
+    PendingIntent pendingIntent;
+    int notificationId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,10 @@ public class MainScreen extends AppCompatActivity {
                 theActivityList.add(mentry.getKey().toString());
             }
         }
+
+        notificationIntent = new Intent(getApplicationContext(),MainScreen.class);
+        pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,notificationIntent,0);
+
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -163,6 +175,14 @@ public class MainScreen extends AppCompatActivity {
                     int second = rightNow.get(Calendar.SECOND);
                     String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
                     startTime = cTime;
+
+                    mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setContentTitle(selectedAc.getText().toString())
+                            .setContentText("Recording "+selectedAc.getText().toString()+" of category "+selectedCategory)
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(R.drawable.ic_launcher);
+                    mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(notificationId,mBuilder.build());
                 }
             }
         });
@@ -205,6 +225,8 @@ public class MainScreen extends AppCompatActivity {
                 second = rightNow.get(Calendar.SECOND);
                 cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
                 databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(theSelectedCat),theSelectedCat);
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(notificationId);
             }
         });
 
@@ -264,6 +286,36 @@ public class MainScreen extends AppCompatActivity {
         outState.putString("selectedActivity",theSelectedAc);
 
     }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        sharedPreferences = this.getSharedPreferences(SHAREDPREFERENCES, Context.MODE_PRIVATE);
+        if(sharedPreferences!= null){
+            isRecording = sharedPreferences.getBoolean("isRecording",false);
+            startTime = sharedPreferences.getString("timeStart",null);
+            savedTime = sharedPreferences.getLong("savedTime",0);
+            theSelectedAc = sharedPreferences.getString("selectedActivity",null);
+            theSelectedCat = sharedPreferences.getString("selectedCategory",null);
+        }
+        if(isRecording) {
+            Calendar rightNow = Calendar.getInstance();
+            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            int minute = rightNow.get(Calendar.MINUTE);
+            int second = rightNow.get(Calendar.SECOND);
+            String cTime = Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            try {
+                Date sDate = format.parse(startTime);
+                Date eDate = format.parse(cTime);
+                long tElapsed = (eDate.getTime() - sDate.getTime()) / 1000;
+                simpleChronometer.setBase(SystemClock.elapsedRealtime() - tElapsed * 1000);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -350,6 +402,7 @@ public class MainScreen extends AppCompatActivity {
         }
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
