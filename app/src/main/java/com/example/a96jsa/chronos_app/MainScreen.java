@@ -148,7 +148,7 @@ public class MainScreen extends AppCompatActivity {
                 int minute = rightNow.get(Calendar.MINUTE);
                 int second = rightNow.get(Calendar.SECOND);
                 String cTime = Integer.toString(hour)+":"+Integer.toString(minute)+":"+Integer.toString(second);
-                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
+                databaseHelper.insertActivityData(selectedAc.getText().toString(),totalTime,startTime,cTime,formattedDate,databaseHelper.getCategoryColor(selectedCategory),selectedCategory);
             }
         });
 
